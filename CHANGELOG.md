@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.190.0](https://github.com/supabase/auth/compare/v2.189.0...v2.190.0) (2026-05-15)
+
+
+### Features
+
+* create tools directory for deterministic builds ([#2522](https://github.com/supabase/auth/issues/2522)) ([52cf3d9](https://github.com/supabase/auth/commit/52cf3d9bc2b6cbd971f4c85b81cd1e9a8bf9e381))
+* fork github.com/joho/godotenv into internal/conf/envparse ([#2521](https://github.com/supabase/auth/issues/2521)) ([cda62a9](https://github.com/supabase/auth/commit/cda62a9c215ea1b8eb7ab281e0db549a2c9e4b46))
+
+
+### Bug Fixes
+
+* catch cancelation errors in bg workers & servers ([#2530](https://github.com/supabase/auth/issues/2530)) ([77f5918](https://github.com/supabase/auth/commit/77f5918c0646433e67aec9e2e560168a50d844c3))
+* **oauth-server:** serialize concurrent authorize/consent with row-level lock ([#2512](https://github.com/supabase/auth/issues/2512)) ([c816cfe](https://github.com/supabase/auth/commit/c816cfeec75c8521f8e25260de7073c7236a9ac9))
+* source WebAuthn RP config from env vars ([#2490](https://github.com/supabase/auth/issues/2490)) ([63949ca](https://github.com/supabase/auth/commit/63949cace4028679ec00192819fb66a5dc0f56f0))
+
 ## [2.189.0](https://github.com/supabase/auth/compare/v2.188.1...v2.189.0) (2026-04-23)
 
 
