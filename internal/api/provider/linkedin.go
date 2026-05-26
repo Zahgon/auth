@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"strings"
 
 	"github.com/supabase/auth/internal/conf"
 	"golang.org/x/oauth2"
@@ -36,13 +35,7 @@ type linkedinUser struct {
 	} `json:"profilePicture"`
 }
 
-func (u *linkedinUser) getAvatarUrl() string {
-	avatarURL := ""
-	if len(u.AvatarURL.DisplayImage.Elements) > 0 {
-		avatarURL = u.AvatarURL.DisplayImage.Elements[0].Identifiers[0].Identifier
-	}
-	return avatarURL
-}
+func (u *linkedinUser) getAvatarUrl() string { _ = "STUB: not implemented"; return "" }
 
 type linkedinName struct {
 	Localized       interface{}    `json:"localized"`
@@ -67,87 +60,26 @@ type linkedinElements struct {
 
 // NewLinkedinProvider creates a Linkedin account provider.
 func NewLinkedinProvider(ext conf.OAuthProviderConfiguration, scopes string) (OAuthProvider, error) {
-	if err := ext.ValidateOAuth(); err != nil {
-		return nil, err
-	}
-
-	apiPath := chooseHost(ext.URL, defaultLinkedinAPIBase)
-
-	oauthScopes := []string{
-		"r_emailaddress",
-		"r_liteprofile",
-	}
-
-	if scopes != "" {
-		oauthScopes = append(oauthScopes, strings.Split(scopes, ",")...)
-	}
-
-	return &linkedinProvider{
-		Config: &oauth2.Config{
-			ClientID:     ext.ClientID[0],
-			ClientSecret: ext.Secret,
-			Endpoint: oauth2.Endpoint{
-				AuthURL:  apiPath + "/oauth/v2/authorization",
-				TokenURL: apiPath + "/oauth/v2/accessToken",
-			},
-			Scopes:      oauthScopes,
-			RedirectURL: ext.RedirectURI,
-		},
-		APIPath: apiPath,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(OAuthProvider), nil
 }
 
 func (g linkedinProvider) GetOAuthToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
-	return g.Exchange(ctx, code, opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (g linkedinProvider) RequiresPKCE() bool {
-	return false
-}
+func (g linkedinProvider) RequiresPKCE() bool { _ = "STUB: not implemented"; return false }
 
-func GetName(name linkedinName) string {
-	key := name.PreferredLocale.Language + "_" + name.PreferredLocale.Country
-	myMap := name.Localized.(map[string]interface{})
-	return myMap[key].(string)
-}
+func GetName(name linkedinName) string { _ = "STUB: not implemented"; return "" }
 
 func (g linkedinProvider) GetUserData(ctx context.Context, tok *oauth2.Token) (*UserProvidedData, error) {
-	var u linkedinUser
-	if err := makeRequest(ctx, tok, g.Config, g.APIPath+"/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))", &u); err != nil {
-		return nil, err
-	}
-
-	var e linkedinElements
-	// Note: Use primary contact api for handling phone numbers
-	if err := makeRequest(ctx, tok, g.Config, g.APIPath+"/v2/emailAddress?q=members&projection=(elements*(handle~))", &e); err != nil {
-		return nil, err
-	}
-
-	data := &UserProvidedData{}
-
-	if e.Elements[0].HandleTilde.EmailAddress != "" {
-		// linkedin only returns the primary email which is verified for the r_emailaddress scope.
-		data.Emails = []Email{{
-			Email:    e.Elements[0].HandleTilde.EmailAddress,
-			Primary:  true,
-			Verified: true,
-		}}
-	}
-
-	avatarURL := u.getAvatarUrl()
-
-	data.Metadata = &Claims{
-		Issuer:        g.APIPath,
-		Subject:       u.ID,
-		Name:          strings.TrimSpace(GetName(u.FirstName) + " " + GetName(u.LastName)),
-		Picture:       avatarURL,
-		Email:         e.Elements[0].HandleTilde.EmailAddress,
-		EmailVerified: true,
-
-		// To be deprecated
-		AvatarURL:  avatarURL,
-		FullName:   strings.TrimSpace(GetName(u.FirstName) + " " + GetName(u.LastName)),
-		ProviderId: u.ID,
-	}
-	return data, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Note: Use primary contact api for handling phone numbers
+
+// linkedin only returns the primary email which is verified for the r_emailaddress scope.
+
+// To be deprecated

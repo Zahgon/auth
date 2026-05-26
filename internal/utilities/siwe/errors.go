@@ -2,7 +2,6 @@ package siwe
 
 import (
 	"errors"
-	"fmt"
 )
 
 // Static errors
@@ -24,14 +23,8 @@ var (
 )
 
 // Dynamic error constructors
-func errUnparsableLine(index int) error {
-	return fmt.Errorf("siwe: encountered unparsable line at index %d", index)
-}
+func errUnparsableLine(index int) error { _ = "STUB: not implemented"; return nil }
 
-func errUnsupportedVersion(got string) error {
-	return fmt.Errorf("siwe: Version value is not supported, expected 1 got %q", got)
-}
+func errUnsupportedVersion(got string) error { _ = "STUB: not implemented"; return nil }
 
-func errInvalidResource(position int) error {
-	return fmt.Errorf("siwe: Resource at position %d has invalid URI", position)
-}
+func errInvalidResource(position int) error { _ = "STUB: not implemented"; return nil }

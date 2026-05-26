@@ -2,14 +2,12 @@ package models
 
 import (
 	"database/sql/driver"
-	"fmt"
 
-	"encoding/json"
+	"time"
+
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gofrs/uuid"
-	"github.com/supabase/auth/internal/crypto"
 	"github.com/supabase/auth/internal/storage"
-	"time"
 )
 
 type Challenge struct {
@@ -27,98 +25,41 @@ type WebAuthnSessionData struct {
 	*webauthn.SessionData
 }
 
-func (s *WebAuthnSessionData) Scan(value interface{}) error {
-	if value == nil {
-		s.SessionData = nil
-		return nil
-	}
+func (s *WebAuthnSessionData) Scan(value interface{}) error { _ = "STUB: not implemented"; return nil }
 
-	// Handle byte and string as a precaution, in postgres driver, json/jsonb should be returned as []byte
-	var data []byte
-	switch v := value.(type) {
-	case []byte:
-		data = v
-	case string:
-		data = []byte(v)
-	default:
-		panic(fmt.Sprintf("unsupported type for web_authn_session_data: %T", value))
-	}
-
-	if len(data) == 0 {
-		s.SessionData = nil
-		return nil
-	}
-	if s.SessionData == nil {
-		s.SessionData = &webauthn.SessionData{}
-	}
-	return json.Unmarshal(data, s.SessionData)
-
-}
+// Handle byte and string as a precaution, in postgres driver, json/jsonb should be returned as []byte
 
 func (s *WebAuthnSessionData) Value() (driver.Value, error) {
-	if s == nil || s.SessionData == nil {
-		return nil, nil
-	}
-	return json.Marshal(s.SessionData)
+	_ = "STUB: not implemented"
+	return *new(driver.Value), nil
 }
 
 func (ws *WebAuthnSessionData) ToChallenge(factorID uuid.UUID, ipAddress string) *Challenge {
-	id := uuid.Must(uuid.NewV4())
-	return &Challenge{
-		ID:        id,
-		FactorID:  factorID,
-		IPAddress: ipAddress,
-		WebAuthnSessionData: &WebAuthnSessionData{
-			ws.SessionData,
-		},
-	}
-
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (Challenge) TableName() string {
-	tableName := "mfa_challenges"
-	return tableName
-}
+func (Challenge) TableName() string { _ = "STUB: not implemented"; return "" }
 
 // Update the verification timestamp
-func (c *Challenge) Verify(tx *storage.Connection) error {
-	now := time.Now()
-	c.VerifiedAt = &now
-	return tx.UpdateOnly(c, "verified_at")
-}
+func (c *Challenge) Verify(tx *storage.Connection) error { _ = "STUB: not implemented"; return nil }
 
 func (c *Challenge) HasExpired(expiryDuration float64) bool {
-	return time.Now().After(c.GetExpiryTime(expiryDuration))
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (c *Challenge) GetExpiryTime(expiryDuration float64) time.Time {
-	return c.CreatedAt.Add(time.Second * time.Duration(expiryDuration))
+	_ = "STUB: not implemented"
+	return *new(time.Time)
 }
 
 func (c *Challenge) SetOtpCode(otpCode string, encrypt bool, encryptionKeyID, encryptionKey string) error {
-	c.OtpCode = otpCode
-	if encrypt {
-		es, err := crypto.NewEncryptedString(c.ID.String(), []byte(otpCode), encryptionKeyID, encryptionKey)
-		if err != nil {
-			return err
-		}
-
-		c.OtpCode = es.String()
-	}
+	_ = "STUB: not implemented"
 	return nil
-
 }
 
 func (c *Challenge) GetOtpCode(decryptionKeys map[string]string, encrypt bool, encryptionKeyID string) (string, bool, error) {
-	if es := crypto.ParseEncryptedString(c.OtpCode); es != nil {
-		bytes, err := es.Decrypt(c.ID.String(), decryptionKeys)
-		if err != nil {
-			return "", false, err
-		}
-
-		return string(bytes), encrypt && es.ShouldReEncrypt(encryptionKeyID), nil
-	}
-
-	return c.OtpCode, encrypt, nil
-
+	_ = "STUB: not implemented"
+	return "", false, nil
 }

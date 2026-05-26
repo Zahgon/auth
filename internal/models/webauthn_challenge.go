@@ -1,11 +1,9 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
 	"github.com/supabase/auth/internal/storage"
 )
 
@@ -25,62 +23,27 @@ type WebAuthnChallenge struct {
 	ExpiresAt     time.Time            `json:"expires_at" db:"expires_at"`
 }
 
-func (WebAuthnChallenge) TableName() string {
-	return "webauthn_challenges"
-}
+func (WebAuthnChallenge) TableName() string { _ = "STUB: not implemented"; return "" }
 
 func NewWebAuthnChallenge(userID *uuid.UUID, challengeType string, sessionData *WebAuthnSessionData, expiresAt time.Time) *WebAuthnChallenge {
-	id := uuid.Must(uuid.NewV4())
-	return &WebAuthnChallenge{
-		ID:            id,
-		UserID:        userID,
-		ChallengeType: challengeType,
-		SessionData:   sessionData,
-		ExpiresAt:     expiresAt,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func FindWebAuthnChallengeByID(conn *storage.Connection, id uuid.UUID) (*WebAuthnChallenge, error) {
-	var challenge WebAuthnChallenge
-	err := conn.Find(&challenge, id)
-	if err != nil && errors.Cause(err) == sql.ErrNoRows {
-		return nil, WebAuthnChallengeNotFoundError{}
-	} else if err != nil {
-		return nil, err
-	}
-	return &challenge, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ConsumeWebAuthnChallengeByID atomically deletes and returns a challenge row
 func ConsumeWebAuthnChallengeByID(conn *storage.Connection, id uuid.UUID, challengeType string, userID *uuid.UUID) (*WebAuthnChallenge, error) {
-	challenge := &WebAuthnChallenge{}
-	table := challenge.TableName()
-
-	var query string
-	var args []any
-	if userID != nil {
-		query = "DELETE FROM " + table + " WHERE id = ? AND challenge_type = ? AND user_id = ? RETURNING *"
-		args = []any{id, challengeType, *userID}
-	} else {
-		query = "DELETE FROM " + table + " WHERE id = ? AND challenge_type = ? AND user_id IS NULL RETURNING *"
-		args = []any{id, challengeType}
-	}
-
-	if err := conn.RawQuery(query, args...).First(challenge); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, WebAuthnChallengeNotFoundError{}
-		}
-
-		return nil, err
-	}
-
-	return challenge, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (c *WebAuthnChallenge) IsExpired() bool {
-	return time.Now().After(c.ExpiresAt)
-}
+func (c *WebAuthnChallenge) IsExpired() bool { _ = "STUB: not implemented"; return false }
 
 func (c *WebAuthnChallenge) Delete(tx *storage.Connection) error {
-	return tx.Destroy(c)
+	_ = "STUB: not implemented"
+	return nil
 }

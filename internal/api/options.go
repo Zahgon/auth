@@ -13,28 +13,18 @@ type Option interface {
 
 type optionFunc func(*API)
 
-func (f optionFunc) apply(a *API) { f(a) }
+func (f optionFunc) apply(a *API) { _ = "STUB: not implemented"; return }
 
-func WithMailer(m mailer.Mailer) Option {
-	return optionFunc(func(a *API) {
-		a.mailer = m
-	})
-}
+func WithMailer(m mailer.Mailer) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 func WithTokenService(service *tokens.Service) Option {
-	return optionFunc(func(a *API) {
-		a.tokenService = service
-	})
+	_ = "STUB: not implemented"
+	return *new(Option)
 }
 
 func WithCaptchaVerifier(v security.CaptchaVerifier) Option {
-	return optionFunc(func(a *API) {
-		a.captchaVerifier = v
-	})
+	_ = "STUB: not implemented"
+	return *new(Option)
 }
 
-func WithLimiter(v *apilimiter.Limiter) Option {
-	return optionFunc(func(a *API) {
-		a.limiterOpts = v
-	})
-}
+func WithLimiter(v *apilimiter.Limiter) Option { _ = "STUB: not implemented"; return *new(Option) }

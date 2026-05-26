@@ -2,13 +2,7 @@ package reloader
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"io"
 	"io/fs"
-	"maps"
-	"os"
-	"strings"
 	"sync"
 	"time"
 )
@@ -37,31 +31,13 @@ type pollerState struct {
 	files     map[string]*pollerFile
 }
 
-func (o *pollerState) reset() { clear(o.files) }
+func (o *pollerState) reset() { _ = "STUB: not implemented"; return }
 
-func newPollerState() *pollerState {
-	return &pollerState{
-		files: make(map[string]*pollerFile),
-	}
-}
+func newPollerState() *pollerState { _ = "STUB: not implemented"; return nil }
 
-func newPollerFile(fi fs.FileInfo) *pollerFile {
-	return &pollerFile{
-		name: fi.Name(),
-		size: fi.Size(),
-		mode: fi.Mode(),
-		mod:  fi.ModTime(),
-		dir:  fi.IsDir(),
-	}
-}
+func newPollerFile(fi fs.FileInfo) *pollerFile { _ = "STUB: not implemented"; return nil }
 
-func newPoller(watchDir string) *poller {
-	return &poller{
-		dir:  watchDir,
-		cur:  newPollerState(),
-		prev: newPollerState(),
-	}
-}
+func newPoller(watchDir string) *poller { _ = "STUB: not implemented"; return nil }
 
 func (o *poller) watch(
 	ctx context.Context,
@@ -69,67 +45,21 @@ func (o *poller) watch(
 	notifyFn func(),
 	errFn func(error),
 ) error {
-	tr := time.NewTicker(ival)
-	defer tr.Stop()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-tr.C:
-			changed, err := o.poll(ctx)
-			if err != nil {
-				errFn(err)
-				continue
-			}
-			if changed {
-				notifyFn()
-			}
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (o *poller) poll(ctx context.Context) (bool, error) {
-	if ok := o.pollMu.TryLock(); !ok {
-		const msg = "reloader: poller: concurrent calls to poll are invalid"
-		return false, errors.New(msg)
-	}
-	defer o.pollMu.Unlock()
-
-	if err := ctx.Err(); err != nil {
-		return false, err
-	}
-
-	o.prev, o.cur = o.cur, o.prev
-	if err := o.scan(ctx, o.cur); err != nil {
-		return false, err
-	}
-	o.cur.updatedAt = time.Now()
-	m1, m2 := o.prev.files, o.cur.files
-
-	if o.prev.updatedAt.IsZero() {
-		return false, nil
-	}
-
-	eq := maps.EqualFunc(m1, m2, func(v1, v2 *pollerFile) bool {
-		return *v1 == *v2
-	})
-	return !eq, nil
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 func (o *poller) scan(
 	ctx context.Context,
 	ps *pollerState,
 ) error {
-	o.cur.reset()
-
-	f, err := os.Open(o.dir)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	return o.scanFile(ctx, ps, f)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (o *poller) scanFile(
@@ -137,45 +67,11 @@ func (o *poller) scanFile(
 	ps *pollerState,
 	f fs.ReadDirFile,
 ) error {
-	fi, err := f.Stat()
-	if err != nil {
-		return fmt.Errorf("poller: %w", err)
-	}
-	if !fi.IsDir() {
-		return fmt.Errorf("poller: %q is not a directory", o.dir)
-	}
-
-	for range pollerMaxFiles / pollerMaxScan {
-		if err := ctx.Err(); err != nil {
-			return err
-		}
-
-		ents, err := f.ReadDir(pollerMaxScan)
-		if err == io.EOF {
-			return nil
-		}
-		if err != nil {
-			return fmt.Errorf("poller: error reading dir %q: %w", o.dir, err)
-		}
-		o.scanEntries(ps, ents)
-	}
-	return fmt.Errorf("poller: %q has too many files", o.dir)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (o *poller) scanEntries(ps *pollerState, ents []fs.DirEntry) {
-	for _, ent := range ents {
-		fi, err := ent.Info()
-		if err != nil {
-			continue
-		}
-		if fi.IsDir() {
-			continue
-		}
-		if !strings.HasSuffix(ent.Name(), ".env") {
-			continue
-		}
-
-		pf := newPollerFile(fi)
-		ps.files[pf.name] = pf
-	}
+	_ = "STUB: not implemented"
+	return
 }

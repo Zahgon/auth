@@ -3,8 +3,6 @@ package utilities
 import (
 	_ "embed"
 	"encoding/json"
-
-	"github.com/gofrs/uuid"
 )
 
 // To update the embedded AAGUID data, run:
@@ -27,15 +25,4 @@ func init() {
 
 // PasskeyFriendlyName returns a human-readable name for a passkey credential.
 // It looks up the raw AAGUID bytes in a well-known database, falling back to "Passkey".
-func PasskeyFriendlyName(aaguid []byte) string {
-	if len(aaguid) > 0 {
-		parsed, err := uuid.FromBytes(aaguid)
-		if err == nil && parsed != (uuid.UUID{}) {
-			if name, ok := aaguidNames[parsed.String()]; ok {
-				return name
-			}
-		}
-	}
-
-	return "Passkey"
-}
+func PasskeyFriendlyName(aaguid []byte) string { _ = "STUB: not implemented"; return "" }

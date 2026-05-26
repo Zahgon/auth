@@ -1,25 +1,13 @@
 package conf
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
-	"errors"
-	"fmt"
 	"net/url"
-	"os"
-	"path/filepath"
 	"regexp"
-	"strings"
 	"text/template"
 	"time"
 
 	"github.com/gobwas/glob"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
-	"github.com/kelseyhightower/envconfig"
 	"github.com/lestrrat-go/jwx/v2/jwk"
-	"gopkg.in/gomail.v2"
 )
 
 const defaultMinPasswordLength int = 6
@@ -43,19 +31,7 @@ type Time struct {
 	time.Time
 }
 
-func (t *Time) UnmarshalText(text []byte) error {
-	trimed := bytes.TrimSpace(text)
-
-	if len(trimed) < 1 {
-		t.Time = time.Time{}
-	} else {
-		if err := t.Time.UnmarshalText(trimed); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
+func (t *Time) UnmarshalText(text []byte) error { _ = "STUB: not implemented"; return nil }
 
 // OAuthProviderConfiguration holds all config related to external account providers.
 type OAuthProviderConfiguration struct {
@@ -127,10 +103,7 @@ type DBConfiguration struct {
 	Advisor DBAdvisorConfiguration `json:"advisor"`
 }
 
-func (c *DBConfiguration) Validate() error {
-	c.ConnPercentage = min(max(c.ConnPercentage, 0), 100)
-	return nil
-}
+func (c *DBConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 // JWTConfiguration holds all the JWT related configuration.
 type JWTConfiguration struct {
@@ -184,37 +157,7 @@ type WebAuthnConfiguration struct {
 	ChallengeExpiryDuration time.Duration `json:"challenge_expiry_duration" split_words:"true" default:"5m"`
 }
 
-func (w *WebAuthnConfiguration) Validate() error {
-	if w.RPID == "" {
-		return errors.New("conf: GOTRUE_WEBAUTHN_RP_ID is required when passkeys are enabled")
-	}
-
-	if w.RPDisplayName == "" {
-		return errors.New("conf: GOTRUE_WEBAUTHN_RP_DISPLAY_NAME is required when passkeys are enabled")
-	}
-
-	if len(w.RPOrigins) == 0 {
-		return errors.New("conf: GOTRUE_WEBAUTHN_RP_ORIGINS is required when passkeys are enabled")
-	}
-
-	for _, origin := range w.RPOrigins {
-		u, err := url.Parse(origin)
-		if err != nil {
-			return fmt.Errorf("conf: invalid WebAuthn RP origin %q: %w", origin, err)
-		}
-
-		if u.Scheme == "http" {
-			host := u.Hostname()
-			if host != "localhost" && host != "127.0.0.1" {
-				return fmt.Errorf("conf: WebAuthn RP origin %q must use HTTPS (http is only allowed for localhost/127.0.0.1)", origin)
-			}
-		} else if u.Scheme != "https" {
-			return fmt.Errorf("conf: WebAuthn RP origin %q must use HTTPS", origin)
-		}
-	}
-
-	return nil
-}
+func (w *WebAuthnConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 type PasskeyConfiguration struct {
 	Enabled            bool `json:"enabled" default:"false"`
@@ -230,14 +173,7 @@ type APIConfiguration struct {
 	MaxRequestDuration time.Duration `json:"max_request_duration" split_words:"true" default:"10s"`
 }
 
-func (a *APIConfiguration) Validate() error {
-	_, err := url.ParseRequestURI(a.ExternalURL)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
+func (a *APIConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 type SessionsConfiguration struct {
 	Timebox           *time.Duration `json:"timebox,omitempty"`
@@ -248,50 +184,16 @@ type SessionsConfiguration struct {
 	Tags          []string `json:"tags,omitempty"`
 }
 
-func (c *SessionsConfiguration) Validate() error {
-	if c.Timebox != nil && *c.Timebox <= time.Duration(0) {
-		return fmt.Errorf("conf: session timebox duration must be positive when set, was %v", (*c.Timebox).String())
-	}
-
-	if c.InactivityTimeout != nil && *c.InactivityTimeout <= time.Duration(0) {
-		return fmt.Errorf("conf: session inactivity timeout duration must be positive when set, was %v", (*c.InactivityTimeout).String())
-	}
-
-	if c.AllowLowAAL != nil && *c.AllowLowAAL <= time.Duration(0) {
-		return fmt.Errorf("conf: session allow low AAL duration must be positive when set, was %v", (*c.AllowLowAAL).String())
-	}
-
-	return nil
-}
+func (c *SessionsConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 type PasswordRequiredCharacters []string
 
 func (v *PasswordRequiredCharacters) Decode(value string) error {
-	parts := strings.Split(value, ":")
-
-	for i := 0; i < len(parts)-1; i += 1 {
-		part := parts[i]
-
-		if part == "" {
-			continue
-		}
-
-		// part ended in escape character, so it should be joined with the next one
-		if part[len(part)-1] == '\\' {
-			parts[i] = part[0:len(part)-1] + ":" + parts[i+1]
-			parts[i+1] = ""
-			continue
-		}
-	}
-
-	for _, part := range parts {
-		if part != "" {
-			*v = append(*v, part)
-		}
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// part ended in escape character, so it should be joined with the next one
 
 // HIBPBloomConfiguration configures a bloom cache for pwned passwords. Use
 // this tool to gauge the Items and FalsePositives values:
@@ -417,23 +319,8 @@ type CORSConfiguration struct {
 }
 
 func (c *CORSConfiguration) AllAllowedHeaders(defaults []string) []string {
-	set := make(map[string]bool)
-	for _, header := range defaults {
-		set[header] = true
-	}
-
-	var result []string
-	result = append(result, defaults...)
-
-	for _, header := range c.AllowedHeaders {
-		if !set[header] {
-			result = append(result, header)
-		}
-
-		set[header] = true
-	}
-
-	return result
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // EmailContentConfiguration holds the configuration for emails, both subjects and template URLs.
@@ -532,33 +419,13 @@ type SMTPConfiguration struct {
 	normalizedHeaders map[string][]string `json:"-"`
 }
 
-func (c *SMTPConfiguration) Validate() error {
-	headers := make(map[string][]string)
+func (c *SMTPConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-	if c.Headers != "" {
-		err := json.Unmarshal([]byte(c.Headers), &headers)
-		if err != nil {
-			return fmt.Errorf("conf: SMTP headers not a map[string][]string format: %w", err)
-		}
-	}
-
-	if len(headers) > 0 {
-		c.normalizedHeaders = headers
-	}
-
-	mail := gomail.NewMessage()
-
-	c.fromAddress = mail.FormatAddress(c.AdminEmail, c.SenderName)
-
-	return nil
-}
-
-func (c *SMTPConfiguration) FromAddress() string {
-	return c.fromAddress
-}
+func (c *SMTPConfiguration) FromAddress() string { _ = "STUB: not implemented"; return "" }
 
 func (c *SMTPConfiguration) NormalizedHeaders() map[string][]string {
-	return c.normalizedHeaders
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type MailerConfiguration struct {
@@ -606,46 +473,18 @@ type MailerConfiguration struct {
 	blockedMXRecords map[string]bool     `json:"-"`
 }
 
-func (c *MailerConfiguration) Validate() error {
-	headers := make(map[string][]string)
+func (c *MailerConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-	if c.EmailValidationServiceHeaders != "" {
-		err := json.Unmarshal([]byte(c.EmailValidationServiceHeaders), &headers)
-		if err != nil {
-			return fmt.Errorf("conf: mailer validation headers not a map[string][]string format: %w", err)
-		}
-	}
+// EmailValidationBlockedMX is a JSON array in the config string for brevity.
 
-	if len(headers) > 0 {
-		c.serviceHeaders = headers
-	}
-
-	// EmailValidationBlockedMX is a JSON array in the config string for brevity.
-	var blockedMXRecords map[string]bool
-	if c.EmailValidationBlockedMX != "" {
-		var blockedMXArray []string
-		err := json.Unmarshal([]byte(c.EmailValidationBlockedMX), &blockedMXArray)
-		if err != nil {
-			return fmt.Errorf("conf: email_validation_blocked_mx is not a valid JSON array: %w", err)
-		}
-		blockedMXRecords = make(map[string]bool, len(blockedMXArray)*2)
-		for _, record := range blockedMXArray {
-			blockedMXRecords[record] = true
-			blockedMXRecords[record+"."] = true
-		}
-	}
-
-	c.blockedMXRecords = blockedMXRecords
-
+func (c *MailerConfiguration) GetEmailValidationServiceHeaders() map[string][]string {
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (c *MailerConfiguration) GetEmailValidationServiceHeaders() map[string][]string {
-	return c.serviceHeaders
-}
-
 func (c *MailerConfiguration) GetEmailValidationBlockedMXRecords() map[string]bool {
-	return c.blockedMXRecords
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type PhoneProviderConfiguration struct {
@@ -671,11 +510,7 @@ type SmsProviderConfiguration struct {
 }
 
 func (c *SmsProviderConfiguration) GetTestOTP(phone string, now time.Time) (string, bool) {
-	if c.TestOTP != nil && (c.TestOTPValidUntil.Time.IsZero() || now.Before(c.TestOTPValidUntil.Time)) {
-		testOTP, ok := c.TestOTP[phone]
-		return testOTP, ok
-	}
-
+	_ = "STUB: not implemented"
 	return "", false
 }
 
@@ -715,23 +550,7 @@ type CaptchaConfiguration struct {
 	Timeout  time.Duration `json:"timeout" split_words:"true" default:"10s"`
 }
 
-func (c *CaptchaConfiguration) Validate() error {
-	if !c.Enabled {
-		return nil
-	}
-
-	if c.Provider != "hcaptcha" && c.Provider != "turnstile" {
-		return fmt.Errorf("unsupported captcha provider: %s", c.Provider)
-	}
-
-	c.Secret = strings.TrimSpace(c.Secret)
-
-	if c.Secret == "" {
-		return errors.New("captcha provider secret is empty")
-	}
-
-	return nil
-}
+func (c *CaptchaConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 // DatabaseEncryptionConfiguration configures Auth to encrypt certain columns.
 // Once Encrypt is set to true, data will start getting encrypted with the
@@ -747,39 +566,7 @@ type DatabaseEncryptionConfiguration struct {
 	DecryptionKeys map[string]string `json:"-" split_words:"true"`
 }
 
-func (c *DatabaseEncryptionConfiguration) Validate() error {
-	if c.Encrypt {
-		if c.EncryptionKeyID == "" {
-			return errors.New("conf: encryption key ID must be specified")
-		}
-
-		decodedKey, err := base64.RawURLEncoding.DecodeString(c.EncryptionKey)
-		if err != nil {
-			return err
-		}
-
-		if len(decodedKey) != 256/8 {
-			return errors.New("conf: encryption key is not 256 bits")
-		}
-
-		if c.DecryptionKeys == nil || c.DecryptionKeys[c.EncryptionKeyID] == "" {
-			return errors.New("conf: encryption key must also be present in decryption keys")
-		}
-	}
-
-	for id, key := range c.DecryptionKeys {
-		decodedKey, err := base64.RawURLEncoding.DecodeString(key)
-		if err != nil {
-			return err
-		}
-
-		if len(decodedKey) != 256/8 {
-			return fmt.Errorf("conf: decryption key with ID %q must be 256 bits", id)
-		}
-	}
-
-	return nil
-}
+func (c *DatabaseEncryptionConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 type SecurityConfiguration struct {
 	Captcha                               CaptchaConfiguration `json:"captcha"`
@@ -796,39 +583,11 @@ type SecurityConfiguration struct {
 	DBEncryption DatabaseEncryptionConfiguration `json:"database_encryption" split_words:"true"`
 }
 
-func (c *SecurityConfiguration) Validate() error {
-	if err := c.Captcha.Validate(); err != nil {
-		return err
-	}
+func (c *SecurityConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-	if err := c.DBEncryption.Validate(); err != nil {
-		return err
-	}
+func loadEnvironment(filename string) error { _ = "STUB: not implemented"; return nil }
 
-	if c.RefreshTokenAlgorithmVersion < 0 || c.RefreshTokenAlgorithmVersion > 2 {
-		return fmt.Errorf("refresh token algorithm version must be 0, 1 or 2 but was %v", c.RefreshTokenAlgorithmVersion)
-	}
-
-	if c.RefreshTokenUpgradePercentage < 0 || c.RefreshTokenUpgradePercentage > 100 {
-		return fmt.Errorf("refresh token upgrade percentage must be between 0 and 100, but was %v", c.RefreshTokenUpgradePercentage)
-	}
-
-	return nil
-}
-
-func loadEnvironment(filename string) error {
-	var err error
-	if filename != "" {
-		err = godotenv.Overload(filename)
-	} else {
-		err = godotenv.Load()
-		// handle if .env file does not exist, this is OK
-		if os.IsNotExist(err) {
-			return nil
-		}
-	}
-	return err
-}
+// handle if .env file does not exist, this is OK
 
 // Moving away from the existing HookConfig so we can get a fresh start.
 type HookConfiguration struct {
@@ -844,16 +603,7 @@ type HookConfiguration struct {
 
 type HTTPHookSecrets []string
 
-func (h *HTTPHookSecrets) Decode(value string) error {
-	parts := strings.Split(value, "|")
-	for _, part := range parts {
-		if part != "" {
-			*h = append(*h, part)
-		}
-	}
-
-	return nil
-}
+func (h *HTTPHookSecrets) Decode(value string) error { _ = "STUB: not implemented"; return nil }
 
 type ExtensibilityPointConfiguration struct {
 	URI     string `json:"uri"`
@@ -864,88 +614,23 @@ type ExtensibilityPointConfiguration struct {
 	HTTPHookSecrets HTTPHookSecrets `json:"secrets" envconfig:"secrets"`
 }
 
-func (h *HookConfiguration) Validate() error {
-	points := []ExtensibilityPointConfiguration{
-		h.MFAVerificationAttempt,
-		h.PasswordVerificationAttempt,
-		h.CustomAccessToken,
-		h.SendSMS,
-		h.SendEmail,
-		h.BeforeUserCreated,
-		h.AfterUserCreated,
-	}
-	for _, point := range points {
-		if err := point.ValidateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-	return nil
-}
+func (h *HookConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 func (e *ExtensibilityPointConfiguration) ValidateExtensibilityPoint() error {
-	if e.URI == "" {
-		return nil
-	}
-	u, err := url.Parse(e.URI)
-	if err != nil {
-		return err
-	}
-	switch strings.ToLower(u.Scheme) {
-	case "pg-functions":
-		return validatePostgresPath(u)
-	case "http":
-		hostname := u.Hostname()
-		if hostname == "localhost" || hostname == "127.0.0.1" || hostname == "::1" || hostname == "host.docker.internal" {
-			return validateHTTPHookSecrets(e.HTTPHookSecrets)
-		}
-		return fmt.Errorf("only localhost, 127.0.0.1, and ::1 are supported with http")
-	case "https":
-		return validateHTTPHookSecrets(e.HTTPHookSecrets)
-	default:
-		return fmt.Errorf("only postgres hooks and HTTPS functions are supported at the moment")
-	}
-}
-
-func validatePostgresPath(u *url.URL) error {
-	pathParts := strings.Split(u.Path, "/")
-	if len(pathParts) < 3 {
-		return fmt.Errorf("URI path does not contain enough parts")
-	}
-
-	schema := pathParts[1]
-	table := pathParts[2]
-	// Validate schema and table names
-	if !postgresNamesRegexp.MatchString(schema) {
-		return fmt.Errorf("invalid schema name: %s", schema)
-	}
-	if !postgresNamesRegexp.MatchString(table) {
-		return fmt.Errorf("invalid table name: %s", table)
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func isValidSecretFormat(secret string) bool {
-	return symmetricSecretFormat.MatchString(secret) || asymmetricSecretFormat.MatchString(secret)
-}
+func validatePostgresPath(u *url.URL) error { _ = "STUB: not implemented"; return nil }
 
-func validateHTTPHookSecrets(secrets []string) error {
-	for _, secret := range secrets {
-		if !isValidSecretFormat(secret) {
-			return fmt.Errorf("invalid secret format")
-		}
-	}
-	return nil
-}
+// Validate schema and table names
+
+func isValidSecretFormat(secret string) bool { _ = "STUB: not implemented"; return false }
+
+func validateHTTPHookSecrets(secrets []string) error { _ = "STUB: not implemented"; return nil }
 
 func (e *ExtensibilityPointConfiguration) PopulateExtensibilityPoint() error {
-	u, err := url.Parse(e.URI)
-	if err != nil {
-		return err
-	}
-	if u.Scheme == "pg-functions" {
-		pathParts := strings.Split(u.Path, "/")
-		e.HookName = fmt.Sprintf("%q.%q", pathParts[1], pathParts[2])
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -954,19 +639,9 @@ func (e *ExtensibilityPointConfiguration) PopulateExtensibilityPoint() error {
 //
 // godotenv.Load: preserves env, ".env" path is optional
 // godotenv.Overload: overrides env, "filename" path must exist
-func LoadFile(filename string) error {
-	var err error
-	if filename != "" {
-		err = godotenv.Overload(filename)
-	} else {
-		err = godotenv.Load()
-		// handle if .env file does not exist, this is OK
-		if os.IsNotExist(err) {
-			return nil
-		}
-	}
-	return err
-}
+func LoadFile(filename string) error { _ = "STUB: not implemented"; return nil }
+
+// handle if .env file does not exist, this is OK
 
 // LoadDirectory does nothing when configDir is empty, otherwise it will attempt
 // to load a list of configuration files located in configDir by using ReadDir
@@ -974,451 +649,91 @@ func LoadFile(filename string) error {
 //
 // When the list is empty it will do nothing, otherwise it passes the file list
 // to godotenv.Overload to pull them into the current environment.
-func LoadDirectory(configDir string) error {
-	if configDir == "" {
-		return nil
-	}
+func LoadDirectory(configDir string) error { _ = "STUB: not implemented"; return nil }
 
-	// Returns entries sorted by filename
-	ents, err := os.ReadDir(configDir)
-	if err != nil {
-		// We mimic the behavior of LoadGlobal here, if an explicit path is
-		// provided we return an error.
-		return err
-	}
+// Returns entries sorted by filename
 
-	var paths []string
-	for _, ent := range ents {
-		if ent.IsDir() {
-			continue // ignore directories
-		}
+// We mimic the behavior of LoadGlobal here, if an explicit path is
+// provided we return an error.
 
-		// We only read files ending in .env
-		name := ent.Name()
-		if !strings.HasSuffix(name, ".env") {
-			continue
-		}
+// ignore directories
 
-		// ent.Name() does not include the watch dir.
-		paths = append(paths, filepath.Join(configDir, name))
-	}
+// We only read files ending in .env
 
-	// If at least one path was found we load the configuration files in the
-	// directory. We don't call override without config files because it will
-	// override the env vars previously set with a ".env", if one exists.
-	return loadDirectoryPaths(paths...)
-}
+// ent.Name() does not include the watch dir.
+
+// If at least one path was found we load the configuration files in the
+// directory. We don't call override without config files because it will
+// override the env vars previously set with a ".env", if one exists.
 
 func loadDirectoryPaths(p ...string) error {
+	_ = "STUB: not implemented"
 	// If at least one path was found we load the configuration files in the
 	// directory. We don't call override without config files because it will
 	// override the env vars previously set with a ".env", if one exists.
-	if len(p) > 0 {
-		if err := godotenv.Overload(p...); err != nil {
-			return err
-		}
-	}
 	return nil
 }
 
 // LoadGlobalFromEnv will return a new *GlobalConfiguration value from the
 // currently configured environment.
-func LoadGlobalFromEnv() (*GlobalConfiguration, error) {
-	config := new(GlobalConfiguration)
-	if err := loadGlobal(config); err != nil {
-		return nil, err
-	}
-	return config, nil
-}
+func LoadGlobalFromEnv() (*GlobalConfiguration, error) { _ = "STUB: not implemented"; return nil, nil }
 
 func LoadGlobal(filename string) (*GlobalConfiguration, error) {
-	if err := loadEnvironment(filename); err != nil {
-		return nil, err
-	}
-
-	config := new(GlobalConfiguration)
-	if err := loadGlobal(config); err != nil {
-		return nil, err
-	}
-	return config, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func loadGlobal(config *GlobalConfiguration) error {
+	_ = "STUB: not implemented"
 	// although the package is called "auth" it used to be called "gotrue"
 	// so environment configs will remain to be called "GOTRUE"
-	if err := envconfig.Process("gotrue", config); err != nil {
-		return err
-	}
-
-	if err := config.ApplyDefaults(); err != nil {
-		return err
-	}
-
-	if err := config.Validate(); err != nil {
-		return err
-	}
-	return populateGlobal(config)
-}
-
-func populateGlobal(config *GlobalConfiguration) error {
-	if config.Hook.PasswordVerificationAttempt.Enabled {
-		if err := config.Hook.PasswordVerificationAttempt.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-
-	if config.Hook.SendSMS.Enabled {
-		if err := config.Hook.SendSMS.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-	if config.Hook.SendEmail.Enabled {
-		if err := config.Hook.SendEmail.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-
-	if config.Hook.MFAVerificationAttempt.Enabled {
-		if err := config.Hook.MFAVerificationAttempt.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-
-	if config.Hook.CustomAccessToken.Enabled {
-		if err := config.Hook.CustomAccessToken.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-
-	if config.Hook.BeforeUserCreated.Enabled {
-		if err := config.Hook.BeforeUserCreated.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-
-	if config.Hook.AfterUserCreated.Enabled {
-		if err := config.Hook.AfterUserCreated.PopulateExtensibilityPoint(); err != nil {
-			return err
-		}
-	}
-
-	if config.SAML.Enabled {
-		if err := config.SAML.PopulateFields(config.API.ExternalURL); err != nil {
-			return err
-		}
-	} else {
-		config.SAML.PrivateKey = ""
-	}
-
-	if config.Sms.Provider != "" {
-		SMSTemplate := config.Sms.Template
-		if SMSTemplate == "" {
-			SMSTemplate = "Your code is {{ .Code }}"
-		}
-		template, err := template.New("").Parse(SMSTemplate)
-		if err != nil {
-			return err
-		}
-		config.Sms.SMSTemplate = template
-	}
-
-	if config.MFA.Phone.EnrollEnabled || config.MFA.Phone.VerifyEnabled {
-		smsTemplate := config.MFA.Phone.Template
-		if smsTemplate == "" {
-			smsTemplate = "Your code is {{ .Code }}"
-		}
-		template, err := template.New("").Parse(smsTemplate)
-		if err != nil {
-			return err
-		}
-		config.MFA.Phone.SMSTemplate = template
-	}
-
 	return nil
 }
+
+func populateGlobal(config *GlobalConfiguration) error { _ = "STUB: not implemented"; return nil }
 
 // ApplyDefaults sets defaults for a GlobalConfiguration
-func (config *GlobalConfiguration) ApplyDefaults() error {
-	if config.JWT.AdminGroupName == "" {
-		config.JWT.AdminGroupName = "admin"
-	}
+func (config *GlobalConfiguration) ApplyDefaults() error { _ = "STUB: not implemented"; return nil }
 
-	if len(config.JWT.AdminRoles) == 0 {
-		config.JWT.AdminRoles = []string{"service_role", "supabase_admin"}
-	}
+// transform the secret into a JWK for consistency
 
-	if config.JWT.Exp == 0 {
-		config.JWT.Exp = 3600
-	}
+// 1 day
 
-	if len(config.JWT.Keys) == 0 {
-		// transform the secret into a JWK for consistency
-		if err := config.applyDefaultsJWT([]byte(config.JWT.Secret)); err != nil {
-			return err
-		}
-	}
+// 6-digit otp by default
 
-	if config.JWT.ValidMethods == nil {
-		config.JWT.ValidMethods = []string{}
-		for _, key := range config.JWT.Keys {
-			alg := GetSigningAlg(key.PublicKey)
-			config.JWT.ValidMethods = append(config.JWT.ValidMethods, alg.Alg())
-		}
+// 6-digit otp by default
 
-	}
+// 6-digit otp by default
 
-	if config.Mailer.Autoconfirm && config.Mailer.AllowUnverifiedEmailSignIns {
-		return errors.New("cannot enable both GOTRUE_MAILER_AUTOCONFIRM and GOTRUE_MAILER_ALLOW_UNVERIFIED_EMAIL_SIGN_INS")
-	}
-
-	if config.Mailer.URLPaths.Invite == "" {
-		config.Mailer.URLPaths.Invite = "/verify"
-	}
-
-	if config.Mailer.URLPaths.Confirmation == "" {
-		config.Mailer.URLPaths.Confirmation = "/verify"
-	}
-
-	if config.Mailer.URLPaths.Recovery == "" {
-		config.Mailer.URLPaths.Recovery = "/verify"
-	}
-
-	if config.Mailer.URLPaths.EmailChange == "" {
-		config.Mailer.URLPaths.EmailChange = "/verify"
-	}
-
-	if config.Mailer.OtpExp == 0 {
-		config.Mailer.OtpExp = 86400 // 1 day
-	}
-
-	if config.Mailer.OtpLength == 0 || config.Mailer.OtpLength < 6 || config.Mailer.OtpLength > 10 {
-		// 6-digit otp by default
-		config.Mailer.OtpLength = 6
-	}
-
-	if config.SMTP.MaxFrequency == 0 {
-		config.SMTP.MaxFrequency = 1 * time.Minute
-	}
-
-	if config.Sms.MaxFrequency == 0 {
-		config.Sms.MaxFrequency = 1 * time.Minute
-	}
-
-	if config.Sms.OtpExp == 0 {
-		config.Sms.OtpExp = 60
-	}
-
-	if config.Sms.OtpLength == 0 || config.Sms.OtpLength < 6 || config.Sms.OtpLength > 10 {
-		// 6-digit otp by default
-		config.Sms.OtpLength = 6
-	}
-
-	if config.Sms.TestOTP != nil {
-		formatTestOtps := make(map[string]string)
-		for phone, otp := range config.Sms.TestOTP {
-			phone = strings.ReplaceAll(strings.TrimPrefix(phone, "+"), " ", "")
-			formatTestOtps[phone] = otp
-		}
-		config.Sms.TestOTP = formatTestOtps
-	}
-
-	if len(config.Sms.Template) == 0 {
-		config.Sms.Template = ""
-	}
-
-	if config.URIAllowList == nil {
-		config.URIAllowList = []string{}
-	}
-
-	if config.URIAllowList != nil {
-		config.URIAllowListMap = make(map[string]glob.Glob)
-		for _, uri := range config.URIAllowList {
-			g := glob.MustCompile(uri, '.', '/')
-			config.URIAllowListMap[uri] = g
-		}
-	}
-
-	if config.Password.MinLength < defaultMinPasswordLength {
-		config.Password.MinLength = defaultMinPasswordLength
-	}
-
-	if config.MFA.ChallengeExpiryDuration < defaultChallengeExpiryDuration {
-		config.MFA.ChallengeExpiryDuration = defaultChallengeExpiryDuration
-	}
-
-	if config.MFA.FactorExpiryDuration < defaultFactorExpiryDuration {
-		config.MFA.FactorExpiryDuration = defaultFactorExpiryDuration
-	}
-
-	if config.MFA.Phone.MaxFrequency == 0 {
-		config.MFA.Phone.MaxFrequency = 1 * time.Minute
-	}
-
-	if config.MFA.Phone.OtpLength < 6 || config.MFA.Phone.OtpLength > 10 {
-		// 6-digit otp by default
-		config.MFA.Phone.OtpLength = 6
-	}
-
-	if config.External.FlowStateExpiryDuration < defaultFlowStateExpiryDuration {
-		config.External.FlowStateExpiryDuration = defaultFlowStateExpiryDuration
-	}
-
-	if len(config.External.AllowedIdTokenIssuers) == 0 {
-		config.External.AllowedIdTokenIssuers = append(config.External.AllowedIdTokenIssuers, "https://appleid.apple.com", "https://accounts.google.com")
-	}
-
-	return nil
-}
 func (config *GlobalConfiguration) applyDefaultsJWT(secret []byte) error {
+	_ = "STUB: not implemented"
 	// transform the secret into a JWK for consistency
-	privKey, err := jwk.FromRaw(secret)
-	if err != nil {
-		return err
-	}
-	return config.applyDefaultsJWTPrivateKey(privKey)
+	return nil
 }
 
 func (config *GlobalConfiguration) applyDefaultsJWTPrivateKey(privKey jwk.Key) error {
-	if config.JWT.KeyID != "" {
-		if err := privKey.Set(jwk.KeyIDKey, config.JWT.KeyID); err != nil {
-			return err
-		}
-	}
-	if privKey.Algorithm().String() == "" {
-		if err := privKey.Set(jwk.AlgorithmKey, jwt.SigningMethodHS256.Name); err != nil {
-			return err
-		}
-	}
-	if err := privKey.Set(jwk.KeyUsageKey, "sig"); err != nil {
-		return err
-	}
-	if len(privKey.KeyOps()) == 0 {
-		if err := privKey.Set(jwk.KeyOpsKey, jwk.KeyOperationList{jwk.KeyOpSign, jwk.KeyOpVerify}); err != nil {
-			return err
-		}
-	}
-	pubKey, err := privKey.PublicKey()
-	if err != nil {
-		return err
-	}
-	config.JWT.Keys = make(JwtKeysDecoder)
-	config.JWT.Keys[config.JWT.KeyID] = JwkInfo{
-		PublicKey:  pubKey,
-		PrivateKey: privKey,
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Validate validates all of configuration.
-func (c *GlobalConfiguration) Validate() error {
-	validatables := []interface {
-		Validate() error
-	}{
-		&c.API,
-		&c.DB,
-		&c.Tracing,
-		&c.Metrics,
-		&c.SMTP,
-		&c.Mailer,
-		&c.SAML,
-		&c.Security,
-		&c.Sessions,
-		&c.Hook,
-		&c.JWT.Keys,
-	}
+func (c *GlobalConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-	for _, validatable := range validatables {
-		if err := validatable.Validate(); err != nil {
-			return err
-		}
-	}
+func (o *OAuthProviderConfiguration) ValidateOAuth() error { _ = "STUB: not implemented"; return nil }
 
-	if c.Passkey.Enabled || c.MFA.WebAuthn.EnrollEnabled || c.MFA.WebAuthn.VerifyEnabled {
-		if err := c.WebAuthn.Validate(); err != nil {
-			return err
-		}
-	}
+func (t *TwilioProviderConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-	return nil
-}
+func (t *TwilioVerifyProviderConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-func (o *OAuthProviderConfiguration) ValidateOAuth() error {
-	if !o.Enabled {
-		return errors.New("provider is not enabled")
-	}
-	if len(o.ClientID) == 0 {
-		return errors.New("missing OAuth client ID")
-	}
-	if o.Secret == "" {
-		return errors.New("missing OAuth secret")
-	}
-	if o.RedirectURI == "" {
-		return errors.New("missing redirect URI")
-	}
-	return nil
-}
+func (t *MessagebirdProviderConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-func (t *TwilioProviderConfiguration) Validate() error {
-	if t.AccountSid == "" {
-		return errors.New("missing Twilio account SID")
-	}
-	if t.AuthToken == "" {
-		return errors.New("missing Twilio auth token")
-	}
-	if t.MessageServiceSid == "" {
-		return errors.New("missing Twilio message service SID or Twilio phone number")
-	}
-	return nil
-}
+func (t *TextlocalProviderConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
-func (t *TwilioVerifyProviderConfiguration) Validate() error {
-	if t.AccountSid == "" {
-		return errors.New("missing Twilio account SID")
-	}
-	if t.AuthToken == "" {
-		return errors.New("missing Twilio auth token")
-	}
-	if t.MessageServiceSid == "" {
-		return errors.New("missing Twilio message service SID or Twilio phone number")
-	}
-	return nil
-}
-
-func (t *MessagebirdProviderConfiguration) Validate() error {
-	if t.AccessKey == "" {
-		return errors.New("missing Messagebird access key")
-	}
-	if t.Originator == "" {
-		return errors.New("missing Messagebird originator")
-	}
-	return nil
-}
-
-func (t *TextlocalProviderConfiguration) Validate() error {
-	if t.ApiKey == "" {
-		return errors.New("missing Textlocal API key")
-	}
-	if t.Sender == "" {
-		return errors.New("missing Textlocal sender")
-	}
-	return nil
-}
-
-func (t *VonageProviderConfiguration) Validate() error {
-	if t.ApiKey == "" {
-		return errors.New("missing Vonage API key")
-	}
-	if t.ApiSecret == "" {
-		return errors.New("missing Vonage API secret")
-	}
-	if t.From == "" {
-		return errors.New("missing Vonage 'from' parameter")
-	}
-	return nil
-}
+func (t *VonageProviderConfiguration) Validate() error { _ = "STUB: not implemented"; return nil }
 
 func (t *SmsProviderConfiguration) IsTwilioVerifyProvider() bool {
-	return t.Provider == "twilio_verify"
+	_ = "STUB: not implemented"
+	return false
 }
 
 // IndexWorkerConfiguration holds the configuration for creating database indexes on the users table.

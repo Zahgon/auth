@@ -24,40 +24,12 @@ type Limiter interface {
 }
 
 // Equal checks to see if two limiters / vals / cfgs are both valid and equal.
-func Equal(a, b any) bool {
-	return a != nil && b != nil && toRate(a) == toRate(b)
-}
+func Equal(a, b any) bool { _ = "STUB: not implemented"; return false }
 
-func toRate(v any) conf.Rate {
-	switch T := v.(type) {
-	case *BurstLimiter:
-		return T.Config()
-	case *IntervalLimiter:
-		return T.Config()
-	case *conf.Rate:
-		return *T
-	case conf.Rate:
-		return T
-	case string:
-		var r conf.Rate
-		if err := r.Decode(T); err == nil {
-			return r
-		}
-		return conf.Rate{}
-	default:
-		return conf.Rate{}
-	}
-}
+func toRate(v any) conf.Rate { _ = "STUB: not implemented"; return *new(conf.Rate) }
 
 // New returns a new Limiter based on the given config.
 //
 // When the type is conf.BurstRateType it returns a BurstLimiter, otherwise
 // New returns an IntervalLimiter.
-func New(r conf.Rate) Limiter {
-	switch r.GetRateType() {
-	case conf.BurstRateType:
-		return NewBurstLimiter(r)
-	default:
-		return NewIntervalLimiter(r)
-	}
-}
+func New(r conf.Rate) Limiter { _ = "STUB: not implemented"; return *new(Limiter) }

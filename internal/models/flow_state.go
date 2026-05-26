@@ -1,13 +1,8 @@
 package models
 
 import (
-	"database/sql"
-	"fmt"
-	"strings"
 	"time"
 
-	"github.com/pkg/errors"
-	"github.com/supabase/auth/internal/security"
 	"github.com/supabase/auth/internal/storage"
 
 	"github.com/gofrs/uuid"
@@ -57,23 +52,13 @@ const (
 )
 
 func (codeChallengeMethod CodeChallengeMethod) String() string {
-	switch codeChallengeMethod {
-	case SHA256:
-		return "s256"
-	case Plain:
-		return "plain"
-	}
+	_ = "STUB: not implemented"
 	return ""
 }
 
 func ParseCodeChallengeMethod(codeChallengeMethod string) (CodeChallengeMethod, error) {
-	switch strings.ToLower(codeChallengeMethod) {
-	case "s256":
-		return SHA256, nil
-	case "plain":
-		return Plain, nil
-	}
-	return 0, fmt.Errorf("unsupported code_challenge method %q", codeChallengeMethod)
+	_ = "STUB: not implemented"
+	return *new(CodeChallengeMethod), nil
 }
 
 type FlowType int
@@ -83,88 +68,34 @@ const (
 	ImplicitFlow
 )
 
-func (flowType FlowType) String() string {
-	switch flowType {
-	case PKCEFlow:
-		return "pkce"
-	case ImplicitFlow:
-		return "implicit"
-	}
-	return ""
-}
+func (flowType FlowType) String() string { _ = "STUB: not implemented"; return "" }
 
-func (FlowState) TableName() string {
-	tableName := "flow_state"
-	return tableName
-}
+func (FlowState) TableName() string { _ = "STUB: not implemented"; return "" }
 
 // NewFlowState creates a flow state for both PKCE and implicit flows.
 // PKCE fields (AuthCode, CodeChallenge, CodeChallengeMethod) are only set
 // if CodeChallenge is provided in params.
 // Returns an error if CodeChallenge is provided but CodeChallengeMethod is invalid.
 func NewFlowState(params FlowStateParams) (*FlowState, error) {
-	id := uuid.Must(uuid.NewV4())
-
-	flowState := &FlowState{
-		ID:                   id,
-		ProviderType:         params.ProviderType,
-		AuthenticationMethod: params.AuthenticationMethod.String(),
-		UserID:               params.UserID,
-		EmailOptional:        params.EmailOptional,
-		OAuthClientStateID:   params.OAuthClientStateID,
-		LinkingTargetID:      params.LinkingTargetID,
-	}
-
-	// Set PKCE fields only if code_challenge is provided
-	if params.CodeChallenge != "" {
-		codeChallengeMethod, err := ParseCodeChallengeMethod(params.CodeChallengeMethod)
-		if err != nil {
-			return nil, err
-		}
-		authCode := uuid.Must(uuid.NewV4()).String()
-		ccMethod := codeChallengeMethod.String()
-		flowState.AuthCode = &authCode
-		flowState.CodeChallenge = &params.CodeChallenge
-		flowState.CodeChallengeMethod = &ccMethod
-	}
-
-	// Set optional context fields
-	if params.InviteToken != "" {
-		flowState.InviteToken = &params.InviteToken
-	}
-	if params.Referrer != "" {
-		flowState.Referrer = &params.Referrer
-	}
-
-	return flowState, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Set PKCE fields only if code_challenge is provided
+
+// Set optional context fields
 
 // IsPKCE returns true if this flow state represents a PKCE flow
-func (f *FlowState) IsPKCE() bool {
-	return f.CodeChallenge != nil && *f.CodeChallenge != ""
-}
+func (f *FlowState) IsPKCE() bool { _ = "STUB: not implemented"; return false }
 
 func FindFlowStateByAuthCode(tx *storage.Connection, authCode string) (*FlowState, error) {
-	obj := &FlowState{}
-	if err := tx.Eager().Q().Where("auth_code = ?", authCode).First(obj); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, FlowStateNotFoundError{}
-		}
-		return nil, errors.Wrap(err, "error finding flow state")
-	}
-
-	return obj, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func FindFlowStateByID(tx *storage.Connection, id string) (*FlowState, error) {
-	obj := &FlowState{}
-	if err := tx.Eager().Q().Where("id = ?", id).First(obj); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, FlowStateNotFoundError{}
-		}
-		return nil, errors.Wrap(err, "error finding flow state")
-	}
-	return obj, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // FindFlowStateByIDForUpdate finds a flow state by ID and locks the row with
@@ -173,52 +104,26 @@ func FindFlowStateByID(tx *storage.Connection, id string) (*FlowState, error) {
 // return no rows instead of blocking, which surfaces as FlowStateNotFoundError.
 // The lock is held until the transaction commits or rolls back.
 func FindFlowStateByIDForUpdate(tx *storage.Connection, id string) (*FlowState, error) {
-	obj := &FlowState{}
+	_ = "STUB: not implemented"
+
 	// Pop does not provide a way to execute FOR UPDATE queries,
 	// so we use a raw query to lock the row first.
-	if err := tx.RawQuery(
-		fmt.Sprintf("SELECT * FROM %q WHERE id = ? LIMIT 1 FOR UPDATE SKIP LOCKED", obj.TableName()),
-		id,
-	).First(obj); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, FlowStateNotFoundError{}
-		}
-		return nil, errors.Wrap(err, "error finding flow state")
-	}
-	return obj, nil
+	return nil, nil
 }
 
 func FindFlowStateByUserID(tx *storage.Connection, id string, authenticationMethod AuthenticationMethod) (*FlowState, error) {
-	obj := &FlowState{}
-	if err := tx.Eager().Q().Where("user_id = ? and authentication_method = ?", id, authenticationMethod).Last(obj); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, FlowStateNotFoundError{}
-		}
-		return nil, errors.Wrap(err, "error finding flow state")
-	}
-
-	return obj, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (f *FlowState) VerifyPKCE(codeVerifier string) error {
-	if !f.IsPKCE() {
-		return errors.New("PKCE verification not applicable for implicit flow")
-	}
-	return security.VerifyPKCEChallenge(*f.CodeChallenge, *f.CodeChallengeMethod, codeVerifier)
-}
+func (f *FlowState) VerifyPKCE(codeVerifier string) error { _ = "STUB: not implemented"; return nil }
 
 func (f *FlowState) IsExpired(expiryDuration time.Duration) bool {
-	if f.AuthCodeIssuedAt != nil && f.AuthenticationMethod == MagicLink.String() {
-		return time.Now().After(f.AuthCodeIssuedAt.Add(expiryDuration))
-	}
-	return time.Now().After(f.CreatedAt.Add(expiryDuration))
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (f *FlowState) RecordAuthCodeIssuedAtTime(tx *storage.Connection) error {
-	issueTime := time.Now()
-	f.AuthCodeIssuedAt = &issueTime
-	if err := tx.Update(f); err != nil {
-		return err
-	}
+	_ = "STUB: not implemented"
 	return nil
 }

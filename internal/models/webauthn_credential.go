@@ -1,48 +1,23 @@
 package models
 
 import (
-	"database/sql"
 	"database/sql/driver"
-	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
 	"github.com/supabase/auth/internal/storage"
 )
 
 // WebAuthnTransports is a JSON-serializable slice of authenticator transports.
 type WebAuthnTransports []protocol.AuthenticatorTransport
 
-func (t *WebAuthnTransports) Scan(value interface{}) error {
-	if value == nil {
-		*t = nil
-		return nil
-	}
-	var data []byte
-	switch v := value.(type) {
-	case []byte:
-		data = v
-	case string:
-		data = []byte(v)
-	default:
-		return fmt.Errorf("unsupported type for webauthn_transports: %T", value)
-	}
-	if len(data) == 0 {
-		*t = nil
-		return nil
-	}
-	return json.Unmarshal(data, t)
-}
+func (t *WebAuthnTransports) Scan(value interface{}) error { _ = "STUB: not implemented"; return nil }
 
 func (t WebAuthnTransports) Value() (driver.Value, error) {
-	if t == nil {
-		return "[]", nil
-	}
-	return json.Marshal(t)
+	_ = "STUB: not implemented"
+	return *new(driver.Value), nil
 }
 
 // WebAuthnCredential maps to the webauthn_credentials table.
@@ -63,136 +38,70 @@ type WebAuthnCredential struct {
 	LastUsedAt      *time.Time         `json:"last_used_at,omitempty" db:"last_used_at"`
 }
 
-func (WebAuthnCredential) TableName() string {
-	return "webauthn_credentials"
-}
+func (WebAuthnCredential) TableName() string { _ = "STUB: not implemented"; return "" }
 
 func NewWebAuthnCredential(userID uuid.UUID, cred *webauthn.Credential, friendlyName string) *WebAuthnCredential {
-	id := uuid.Must(uuid.NewV4())
-
-	pc := &WebAuthnCredential{
-		ID:              id,
-		UserID:          userID,
-		CredentialID:    cred.ID,
-		PublicKey:       cred.PublicKey,
-		AttestationType: cred.AttestationType,
-		SignCount:       cred.Authenticator.SignCount,
-		Transports:      WebAuthnTransports(cred.Transport),
-		BackupEligible:  cred.Flags.BackupEligible,
-		BackedUp:        cred.Flags.BackupState,
-		FriendlyName:    friendlyName,
-	}
-
-	if len(cred.Authenticator.AAGUID) > 0 {
-		aaguidUUID, err := uuid.FromBytes(cred.Authenticator.AAGUID)
-		if err == nil {
-			pc.AAGUID = &aaguidUUID
-		}
-	}
-
-	return pc
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ToWebAuthnCredential converts back to the library's Credential type for verification.
 func (pc *WebAuthnCredential) ToWebAuthnCredential() webauthn.Credential {
-	cred := webauthn.Credential{
-		ID:              pc.CredentialID,
-		PublicKey:       pc.PublicKey,
-		AttestationType: pc.AttestationType,
-		Transport:       []protocol.AuthenticatorTransport(pc.Transports),
-		Flags: webauthn.CredentialFlags{
-			BackupEligible: pc.BackupEligible,
-			BackupState:    pc.BackedUp,
-		},
-		Authenticator: webauthn.Authenticator{
-			SignCount: pc.SignCount,
-		},
-	}
-
-	if pc.AAGUID != nil {
-		cred.Authenticator.AAGUID = pc.AAGUID.Bytes()
-	}
-
-	return cred
+	_ = "STUB: not implemented"
+	return *new(webauthn.Credential)
 }
 
 func FindWebAuthnCredentialsByUserID(conn *storage.Connection, userID uuid.UUID) ([]*WebAuthnCredential, error) {
-	var creds []*WebAuthnCredential
-	if err := conn.Q().Where("user_id = ?", userID).Order("created_at asc").All(&creds); err != nil {
-		return nil, err
-	}
-	return creds, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func FindWebAuthnCredentialByCredentialID(conn *storage.Connection, credentialID []byte) (*WebAuthnCredential, error) {
-	var cred WebAuthnCredential
-	err := conn.Q().Where("credential_id = ?", credentialID).First(&cred)
-	if err != nil && errors.Cause(err) == sql.ErrNoRows {
-		return nil, WebAuthnCredentialNotFoundError{}
-	} else if err != nil {
-		return nil, err
-	}
-	return &cred, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func FindWebAuthnCredentialByID(conn *storage.Connection, id uuid.UUID) (*WebAuthnCredential, error) {
-	var cred WebAuthnCredential
-	err := conn.Find(&cred, id)
-	if err != nil && errors.Cause(err) == sql.ErrNoRows {
-		return nil, WebAuthnCredentialNotFoundError{}
-	} else if err != nil {
-		return nil, err
-	}
-	return &cred, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func FindWebAuthnCredentialByIDAndUserID(conn *storage.Connection, id, userID uuid.UUID) (*WebAuthnCredential, error) {
-	var cred WebAuthnCredential
-	err := conn.Q().Where("id = ? AND user_id = ?", id, userID).First(&cred)
-	if err != nil && errors.Cause(err) == sql.ErrNoRows {
-		return nil, WebAuthnCredentialNotFoundError{}
-	} else if err != nil {
-		return nil, err
-	}
-
-	return &cred, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func CountWebAuthnCredentialsByUserID(conn *storage.Connection, userID uuid.UUID) (int, error) {
-	count, err := conn.Q().Where("user_id = ?", userID).Count(&WebAuthnCredential{})
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
+	_ = "STUB: not implemented"
+	return 0, nil
 }
 
 func (pc *WebAuthnCredential) UpdateSignCount(tx *storage.Connection, signCount uint32) error {
-	pc.SignCount = signCount
-	return tx.UpdateOnly(pc, "sign_count", "updated_at")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (pc *WebAuthnCredential) UpdateLastUsedAt(tx *storage.Connection) error {
-	now := time.Now()
-	pc.LastUsedAt = &now
-	return tx.UpdateOnly(pc, "last_used_at", "updated_at")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (pc *WebAuthnCredential) UpdateLastUsedWithSignCount(tx *storage.Connection, signCount uint32) error {
-	now := time.Now()
-	pc.SignCount = signCount
-	pc.LastUsedAt = &now
-	return tx.UpdateOnly(pc, "sign_count", "last_used_at", "updated_at")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (pc *WebAuthnCredential) UpdateFriendlyName(tx *storage.Connection, friendlyName string) error {
-	pc.FriendlyName = friendlyName
-	return tx.UpdateOnly(pc, "friendly_name", "updated_at")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (pc *WebAuthnCredential) Delete(tx *storage.Connection) error {
-	return tx.Destroy(pc)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func DeleteWebAuthnCredentialsByUserID(tx *storage.Connection, userID uuid.UUID) error {
-	return tx.RawQuery("DELETE FROM "+(&WebAuthnCredential{}).TableName()+" WHERE user_id = ?", userID).Exec()
+	_ = "STUB: not implemented"
+	return nil
 }

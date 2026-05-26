@@ -3,9 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/lestrrat-go/jwx/v2/jwa"
 	jwk "github.com/lestrrat-go/jwx/v2/jwk"
-	"github.com/supabase/auth/internal/models"
 )
 
 type JwksResponse struct {
@@ -13,22 +11,11 @@ type JwksResponse struct {
 }
 
 func (a *API) WellKnownJwks(w http.ResponseWriter, r *http.Request) error {
-	config := a.config
-	resp := JwksResponse{
-		Keys: []jwk.Key{},
-	}
-
-	for _, key := range config.JWT.Keys {
-		// don't expose hmac jwk in endpoint
-		if key.PublicKey == nil || key.PublicKey.KeyType() == jwa.OctetSeq {
-			continue
-		}
-		resp.Keys = append(resp.Keys, key.PublicKey)
-	}
-
-	w.Header().Set("Cache-Control", "public, max-age=600")
-	return sendJSON(w, http.StatusOK, resp)
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// don't expose hmac jwk in endpoint
 
 // OpenIDConfigurationResponse represents both OIDC Discovery and OAuth 2.0 Authorization Server Metadata
 // This unified response serves both:
@@ -64,57 +51,16 @@ type OpenIDConfigurationResponse struct {
 //
 // Both endpoints return the same comprehensive metadata since OIDC Discovery is a superset of OAuth 2.0 metadata
 func (a *API) WellKnownOpenID(w http.ResponseWriter, r *http.Request) error {
-	config := a.config
-	issuer := config.JWT.Issuer
-
-	// Ensure issuer doesn't end with a slash to avoid double slashes in URLs
-	for len(issuer) > 0 && issuer[len(issuer)-1] == '/' {
-		issuer = issuer[:len(issuer)-1]
-	}
-
-	response := OpenIDConfigurationResponse{
-		Issuer:                config.JWT.Issuer,
-		AuthorizationEndpoint: issuer + "/oauth/authorize",
-		TokenEndpoint:         issuer + "/oauth/token",
-		JWKSURL:               issuer + "/.well-known/jwks.json",
-		UserInfoEndpoint:      issuer + "/oauth/userinfo",
-
-		// OAuth 2.1 / OIDC Supported Features
-		ResponseTypesSupported:            []string{"code"},
-		ResponseModesSupported:            []string{"query"},
-		GrantTypesSupported:               []string{"authorization_code", "refresh_token"},
-		SubjectTypesSupported:             []string{"public"},
-		IDTokenSigningAlgValuesSupported:  []string{"RS256", "HS256", "ES256"}, // TODO :: should create this based on signing key config?
-		TokenEndpointAuthMethodsSupported: []string{"client_secret_basic", "client_secret_post", "none"},
-		CodeChallengeMethodsSupported:     []string{"S256", "plain"},
-		ScopesSupported:                   models.SupportedOAuthScopes,
-
-		// OIDC Standard Claims
-		ClaimsSupported: []string{
-			"sub",
-			"aud",
-			"iss",
-			"exp",
-			"iat",
-			"auth_time",
-			"nonce",
-			"email",
-			"email_verified",
-			"phone_number",
-			"phone_number_verified",
-			"name",
-			"picture",
-			"preferred_username",
-			"updated_at",
-		},
-	}
-
-	// Include registration endpoint if dynamic registration is enabled
-	if config.OAuthServer.Enabled && config.OAuthServer.AllowDynamicRegistration {
-		response.RegistrationEndpoint = issuer + "/oauth/clients/register"
-	}
-
-	w.Header().Set("Cache-Control", "public, max-age=600")
-
-	return sendJSON(w, http.StatusOK, response)
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// Ensure issuer doesn't end with a slash to avoid double slashes in URLs
+
+// OAuth 2.1 / OIDC Supported Features
+
+// TODO :: should create this based on signing key config?
+
+// OIDC Standard Claims
+
+// Include registration endpoint if dynamic registration is enabled

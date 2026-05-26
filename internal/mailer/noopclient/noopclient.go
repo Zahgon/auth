@@ -4,7 +4,6 @@ package noopclient
 
 import (
 	"context"
-	"errors"
 	"time"
 )
 
@@ -12,9 +11,7 @@ type Client struct {
 	Delay time.Duration
 }
 
-func New() *Client {
-	return &Client{}
-}
+func New() *Client { _ = "STUB: not implemented"; return nil }
 
 func (m *Client) Mail(
 	ctx context.Context,
@@ -24,16 +21,6 @@ func (m *Client) Mail(
 	headers map[string][]string,
 	typ string,
 ) error {
-	if to == "" {
-		return errors.New("to field cannot be empty")
-	}
-
-	if m.Delay > 0 {
-		select {
-		case <-time.After(m.Delay):
-		case <-ctx.Done():
-			return ctx.Err()
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }

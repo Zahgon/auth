@@ -1,10 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
-	"github.com/supabase/auth/internal/utilities"
 )
 
 var versionCmd = cobra.Command{
@@ -12,6 +9,4 @@ var versionCmd = cobra.Command{
 	Use: "version",
 }
 
-func showVersion(cmd *cobra.Command, args []string) {
-	fmt.Println(utilities.Version)
-}
+func showVersion(cmd *cobra.Command, args []string) { _ = "STUB: not implemented"; return }

@@ -6,15 +6,12 @@ import (
 
 	"github.com/gofrs/uuid"
 	jwt "github.com/golang-jwt/jwt/v5"
-	"github.com/supabase/auth/internal/api/shared"
 	"github.com/supabase/auth/internal/models"
 )
 
 type contextKey string
 
-func (c contextKey) String() string {
-	return "gotrue api context key " + string(c)
-}
+func (c contextKey) String() string { _ = "STUB: not implemented"; return "" }
 
 const (
 	externalProviderTypeKey          = contextKey("external_provider_type")
@@ -39,225 +36,136 @@ const (
 
 // withToken adds the JWT token to the context.
 func withToken(ctx context.Context, token *jwt.Token) context.Context {
-	return context.WithValue(ctx, tokenKey, token)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // getToken reads the JWT token from the context.
-func getToken(ctx context.Context) *jwt.Token {
-	obj := ctx.Value(tokenKey)
-	if obj == nil {
-		return nil
-	}
+func getToken(ctx context.Context) *jwt.Token { _ = "STUB: not implemented"; return nil }
 
-	return obj.(*jwt.Token)
-}
-
-func getClaims(ctx context.Context) *AccessTokenClaims {
-	token := getToken(ctx)
-	if token == nil {
-		return nil
-	}
-	return token.Claims.(*AccessTokenClaims)
-}
+func getClaims(ctx context.Context) *AccessTokenClaims { _ = "STUB: not implemented"; return nil }
 
 // withUser adds the user to the context.
 func withUser(ctx context.Context, u *models.User) context.Context {
-	return shared.WithUser(ctx, u)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // withTargetUser adds the target user for linking to the context.
 func withTargetUser(ctx context.Context, u *models.User) context.Context {
-	return context.WithValue(ctx, targetUserKey, u)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // with Factor adds the factor id to the context.
 func withFactor(ctx context.Context, f *models.Factor) context.Context {
-	return context.WithValue(ctx, factorKey, f)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // getUser reads the user from the context.
-func getUser(ctx context.Context) *models.User {
-	return shared.GetUser(ctx)
-}
+func getUser(ctx context.Context) *models.User { _ = "STUB: not implemented"; return nil }
 
 // getTargetUser reads the user from the context.
-func getTargetUser(ctx context.Context) *models.User {
-	if ctx == nil {
-		return nil
-	}
-	obj := ctx.Value(targetUserKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*models.User)
-}
+func getTargetUser(ctx context.Context) *models.User { _ = "STUB: not implemented"; return nil }
 
 // getFactor reads the factor id from the context
-func getFactor(ctx context.Context) *models.Factor {
-	obj := ctx.Value(factorKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*models.Factor)
-}
+func getFactor(ctx context.Context) *models.Factor { _ = "STUB: not implemented"; return nil }
 
 // withSession adds the session to the context.
 func withSession(ctx context.Context, s *models.Session) context.Context {
-	return context.WithValue(ctx, sessionKey, s)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // getSession reads the session from the context.
-func getSession(ctx context.Context) *models.Session {
-	if ctx == nil {
-		return nil
-	}
-	obj := ctx.Value(sessionKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*models.Session)
-}
+func getSession(ctx context.Context) *models.Session { _ = "STUB: not implemented"; return nil }
 
 // withSignature adds the provided request ID to the context.
 func withSignature(ctx context.Context, id string) context.Context {
-	return context.WithValue(ctx, signatureKey, id)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 func withInviteToken(ctx context.Context, token string) context.Context {
-	return context.WithValue(ctx, inviteTokenKey, token)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 func withOAuthClientStateID(ctx context.Context, oauthClientStateID uuid.UUID) context.Context {
-	return context.WithValue(ctx, oauthClientStateKey, oauthClientStateID)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 func getOAuthClientStateID(ctx context.Context) uuid.UUID {
-	obj := ctx.Value(oauthClientStateKey)
-	if obj == nil {
-		return uuid.Nil
-	}
-
-	return obj.(uuid.UUID)
+	_ = "STUB: not implemented"
+	return *new(uuid.UUID)
 }
 
 // withFlowState stores the entire FlowState object in the context
 func withFlowState(ctx context.Context, flowState *models.FlowState) context.Context {
-	return context.WithValue(ctx, flowStateContextKey, flowState)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // getFlowState retrieves the FlowState object from the context
-func getFlowState(ctx context.Context) *models.FlowState {
-	obj := ctx.Value(flowStateContextKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*models.FlowState)
-}
+func getFlowState(ctx context.Context) *models.FlowState { _ = "STUB: not implemented"; return nil }
 
-func getInviteToken(ctx context.Context) string {
-	obj := ctx.Value(inviteTokenKey)
-	if obj == nil {
-		return ""
-	}
-
-	return obj.(string)
-}
+func getInviteToken(ctx context.Context) string { _ = "STUB: not implemented"; return "" }
 
 // withExternalProviderType adds the provided request ID to the context.
 func withExternalProviderType(ctx context.Context, id string, emailOptional bool) context.Context {
-	return context.WithValue(context.WithValue(ctx, externalProviderTypeKey, id), externalProviderEmailOptionalKey, emailOptional)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // getExternalProviderType returns the provider type and whether user data without email address should be allowed.
 func getExternalProviderType(ctx context.Context) (string, bool) {
-	idValue := ctx.Value(externalProviderTypeKey)
-	emailOptionalValue := ctx.Value(externalProviderEmailOptionalKey)
-
-	id, okID := idValue.(string)
-	if !okID {
-		return "", false
-	}
-
-	emailOptional, okEmailOptional := emailOptionalValue.(bool)
-	if !okEmailOptional {
-		return "", false
-	}
-
-	return id, emailOptional
+	_ = "STUB: not implemented"
+	return "", false
 }
 
 func withExternalReferrer(ctx context.Context, token string) context.Context {
-	return context.WithValue(ctx, externalReferrerKey, token)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
-func getExternalReferrer(ctx context.Context) string {
-	obj := ctx.Value(externalReferrerKey)
-	if obj == nil {
-		return ""
-	}
-
-	return obj.(string)
-}
+func getExternalReferrer(ctx context.Context) string { _ = "STUB: not implemented"; return "" }
 
 // withAdminUser adds the admin user to the context.
 func withAdminUser(ctx context.Context, u *models.User) context.Context {
-	return context.WithValue(ctx, adminUserKey, u)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // getAdminUser reads the admin user from the context.
-func getAdminUser(ctx context.Context) *models.User {
-	obj := ctx.Value(adminUserKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*models.User)
-}
+func getAdminUser(ctx context.Context) *models.User { _ = "STUB: not implemented"; return nil }
 
 // withRequestToken adds the request token to the context
 func withRequestToken(ctx context.Context, token string) context.Context {
-	return context.WithValue(ctx, oauthTokenKey, token)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
-func getRequestToken(ctx context.Context) string {
-	obj := ctx.Value(oauthTokenKey)
-	if obj == nil {
-		return ""
-	}
-	return obj.(string)
-}
+func getRequestToken(ctx context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func withOAuthVerifier(ctx context.Context, token string) context.Context {
-	return context.WithValue(ctx, oauthVerifierKey, token)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
-func getOAuthVerifier(ctx context.Context) string {
-	obj := ctx.Value(oauthVerifierKey)
-	if obj == nil {
-		return ""
-	}
-	return obj.(string)
-}
+func getOAuthVerifier(ctx context.Context) string { _ = "STUB: not implemented"; return "" }
 
 func withSSOProvider(ctx context.Context, provider *models.SSOProvider) context.Context {
-	return context.WithValue(ctx, ssoProviderKey, provider)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
-func getSSOProvider(ctx context.Context) *models.SSOProvider {
-	obj := ctx.Value(ssoProviderKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*models.SSOProvider)
-}
+func getSSOProvider(ctx context.Context) *models.SSOProvider { _ = "STUB: not implemented"; return nil }
 
 func withExternalHost(ctx context.Context, u *url.URL) context.Context {
-	return context.WithValue(ctx, externalHostKey, u)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
-func getExternalHost(ctx context.Context) *url.URL {
-	obj := ctx.Value(externalHostKey)
-	if obj == nil {
-		return nil
-	}
-	return obj.(*url.URL)
-}
+func getExternalHost(ctx context.Context) *url.URL { _ = "STUB: not implemented"; return nil }

@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"strings"
 
 	"github.com/supabase/auth/internal/conf"
 	"golang.org/x/oauth2"
@@ -41,97 +40,35 @@ type xUserResponse struct {
 // This uses OAuth 2.0 with PKCE instead of OAuth 1.0a.
 // See: https://developer.x.com/en/docs/authentication/oauth-2-0/authorization-code
 func NewXProvider(ext conf.OAuthProviderConfiguration, scopes string) (OAuthProvider, error) {
-	if err := ext.ValidateOAuth(); err != nil {
-		return nil, err
-	}
-
-	authHost := chooseHost(ext.URL, defaultXAuthBase)
-	apiHost := chooseHost(ext.URL, defaultXAPIBase)
-
-	// Default scopes for user authentication
-	// users.email: Access to the user's email address (confirmed_email field)
-	// users.read: Read user profile information
-	// tweet.read: Required scope for OAuth 2.0 user context even if not accessing tweets
-	// offline.access: Get refresh tokens for long-lived access
-	// See: https://developer.x.com/en/docs/authentication/oauth-2-0/authorization-code
-	// and: https://docs.x.com/fundamentals/authentication/guides/v2-authentication-mapping
-	oauthScopes := []string{
-		"users.email",
-		"tweet.read",
-		"users.read",
-		"offline.access",
-	}
-
-	if scopes != "" {
-		oauthScopes = append(oauthScopes, strings.Split(scopes, ",")...)
-	}
-
-	return &xProvider{
-		Config: &oauth2.Config{
-			ClientID:     ext.ClientID[0],
-			ClientSecret: ext.Secret,
-			Endpoint: oauth2.Endpoint{
-				AuthURL:  authHost + "/i/oauth2/authorize",
-				TokenURL: apiHost + "/2/oauth2/token",
-			},
-			RedirectURL: ext.RedirectURI,
-			Scopes:      oauthScopes,
-		},
-		APIHost: apiHost,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(OAuthProvider), nil
 }
+
+// Default scopes for user authentication
+// users.email: Access to the user's email address (confirmed_email field)
+// users.read: Read user profile information
+// tweet.read: Required scope for OAuth 2.0 user context even if not accessing tweets
+// offline.access: Get refresh tokens for long-lived access
+// See: https://developer.x.com/en/docs/authentication/oauth-2-0/authorization-code
+// and: https://docs.x.com/fundamentals/authentication/guides/v2-authentication-mapping
 
 func (x xProvider) GetOAuthToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
-	return x.Exchange(ctx, code, opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (x xProvider) RequiresPKCE() bool {
-	return true
-}
+func (x xProvider) RequiresPKCE() bool { _ = "STUB: not implemented"; return false }
 
 func (x xProvider) GetUserData(ctx context.Context, tok *oauth2.Token) (*UserProvidedData, error) {
-	var resp xUserResponse
+	_ = "STUB: not implemented"
+	return nil,
 
-	// See: https://developer.x.com/en/docs/twitter-api/users/lookup/api-reference/get-users-me
-	userInfoURL := x.APIHost + "/2/users/me?user.fields=id,name,username,confirmed_email,profile_image_url,url,created_at"
-
-	if err := makeRequest(ctx, tok, x.Config, userInfoURL, &resp); err != nil {
-		return nil, err
-	}
-
-	u := resp.Data
-
-	data := &UserProvidedData{
-		Metadata: &Claims{
-			Issuer:            x.APIHost,
-			Subject:           u.ID,
-			Name:              u.Name,
-			PreferredUsername: u.Username,
-			Picture:           u.ProfileImageURL,
-			Profile:           "https://x.com/" + u.Username,
-			Website:           u.URL,
-
-			// Custom claims for X specific data
-			CustomClaims: map[string]any{
-				"created_at": u.CreatedAt,
-			},
-
-			// To be deprecated
-			AvatarURL:   u.ProfileImageURL,
-			FullName:    u.Name,
-			ProviderId:  u.ID,
-			UserNameKey: u.Username,
-		},
-	}
-
-	if u.ConfirmedEmail != "" {
-		data.Emails = []Email{{
-			Email: u.ConfirmedEmail,
-			// X returns only confirmed emails
-			Verified: true,
-			Primary:  true,
-		}}
-	}
-
-	return data, nil
+		// See: https://developer.x.com/en/docs/twitter-api/users/lookup/api-reference/get-users-me
+		nil
 }
+
+// Custom claims for X specific data
+
+// To be deprecated
+
+// X returns only confirmed emails

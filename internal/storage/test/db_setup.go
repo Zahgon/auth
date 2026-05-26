@@ -6,5 +6,6 @@ import (
 )
 
 func SetupDBConnection(globalConfig *conf.GlobalConfiguration) (*storage.Connection, error) {
-	return storage.Dial(globalConfig)
+	_ = "STUB: not implemented"
+	return nil, nil
 }

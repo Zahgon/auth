@@ -1,16 +1,13 @@
 package v0hooks
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/supabase/auth/internal/api/apierrors"
 	"github.com/supabase/auth/internal/mailer"
 	"github.com/supabase/auth/internal/models"
-	"github.com/supabase/auth/internal/utilities"
 )
 
 type Name string
@@ -45,14 +42,7 @@ type Metadata struct {
 	IPAddress string `json:"ip_address,omitempty"`
 }
 
-func NewMetadata(r *http.Request, name Name) *Metadata {
-	return &Metadata{
-		UUID:      uuid.Must(uuid.NewV4()),
-		Time:      time.Now(),
-		IPAddress: utilities.GetIPAddress(r),
-		Name:      name,
-	}
-}
+func NewMetadata(r *http.Request, name Name) *Metadata { _ = "STUB: not implemented"; return nil }
 
 type BeforeUserCreatedInput struct {
 	Metadata *Metadata    `json:"metadata"`
@@ -63,10 +53,8 @@ func NewBeforeUserCreatedInput(
 	r *http.Request,
 	user *models.User,
 ) *BeforeUserCreatedInput {
-	return &BeforeUserCreatedInput{
-		Metadata: NewMetadata(r, BeforeUserCreated),
-		User:     user,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type BeforeUserCreatedOutput struct {
@@ -81,10 +69,8 @@ func NewAfterUserCreatedInput(
 	r *http.Request,
 	user *models.User,
 ) *AfterUserCreatedInput {
-	return &AfterUserCreatedInput{
-		Metadata: NewMetadata(r, AfterUserCreated),
-		User:     user,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type AfterUserCreatedOutput struct{}
@@ -127,13 +113,8 @@ func NewMFAVerificationAttemptInput(
 	factorType string,
 	valid bool,
 ) *MFAVerificationAttemptInput {
-	return &MFAVerificationAttemptInput{
-		Metadata:   NewMetadata(r, MFAVerification),
-		UserID:     userID,
-		FactorID:   factorID,
-		FactorType: factorType,
-		Valid:      valid,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type MFAVerificationAttemptOutput struct {
@@ -152,11 +133,8 @@ func NewPasswordVerificationAttemptInput(
 	userID uuid.UUID,
 	valid bool,
 ) *PasswordVerificationAttemptInput {
-	return &PasswordVerificationAttemptInput{
-		Metadata: NewMetadata(r, PasswordVerification),
-		UserID:   userID,
-		Valid:    valid,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type PasswordVerificationAttemptOutput struct {
@@ -178,12 +156,8 @@ func NewCustomAccessTokenInput(
 	claims *AccessTokenClaims,
 	authenticationMethod string,
 ) *CustomAccessTokenInput {
-	return &CustomAccessTokenInput{
-		Metadata:             NewMetadata(r, CustomizeAccessToken),
-		UserID:               userID,
-		Claims:               claims,
-		AuthenticationMethod: authenticationMethod,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type CustomAccessTokenOutput struct {
@@ -191,34 +165,16 @@ type CustomAccessTokenOutput struct {
 }
 
 func (o *CustomAccessTokenOutput) UnmarshalJSON(b []byte) error {
-	var m map[string]any
-	if err := json.Unmarshal(b, &m); err != nil {
-		return err
-	}
-
-	// First check if the claims field is missing
-	if _, ok := m["claims"]; !ok {
-		httpError := &apierrors.HTTPError{
-			HTTPStatus: http.StatusInternalServerError,
-			Message:    "output claims field is missing",
-		}
-		return httpError
-	}
-
-	// This check allows us to skip an additional unmarshal for valid inputs
-	if v, ok := m["claims"].(map[string]any); ok {
-		o.Claims = v
-		return nil
-	}
-
-	// The Claims field is not a map[string]any so we unmarshal again just
-	// to get the correct error type.
-	type raw CustomAccessTokenOutput
-	if err := json.Unmarshal(b, (*raw)(o)); err != nil {
-		return err
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// First check if the claims field is missing
+
+// This check allows us to skip an additional unmarshal for valid inputs
+
+// The Claims field is not a map[string]any so we unmarshal again just
+// to get the correct error type.
 
 type SendSMSInput struct {
 	Metadata *Metadata    `json:"metadata"`
@@ -231,11 +187,8 @@ func NewSendSMSInput(
 	user *models.User,
 	sms SMS,
 ) *SendSMSInput {
-	return &SendSMSInput{
-		Metadata: NewMetadata(r, SendSMS),
-		User:     user,
-		SMS:      sms,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type SendSMSOutput struct {
@@ -252,11 +205,8 @@ func NewSendEmailInput(
 	user *models.User,
 	emailData mailer.EmailData,
 ) *SendEmailInput {
-	return &SendEmailInput{
-		Metadata:  NewMetadata(r, SendEmail),
-		User:      user,
-		EmailData: emailData,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type SendEmailOutput struct {

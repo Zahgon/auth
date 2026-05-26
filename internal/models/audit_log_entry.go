@@ -1,20 +1,12 @@
 package models
 
 import (
-	"bytes"
-	"fmt"
 	"net/http"
 	"time"
 
-	"maps"
-
 	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/supabase/auth/internal/conf"
-	"github.com/supabase/auth/internal/observability"
 	"github.com/supabase/auth/internal/storage"
-	"github.com/supabase/auth/internal/utilities"
 )
 
 type AuditAction string
@@ -95,118 +87,33 @@ type AuditLogEntry struct {
 	DONTUSEINSTANCEID uuid.UUID `json:"-" db:"instance_id"`
 }
 
-func (AuditLogEntry) TableName() string {
-	tableName := "audit_log_entries"
-	return tableName
-}
+func (AuditLogEntry) TableName() string { _ = "STUB: not implemented"; return "" }
 
 func NewAuditLogEntry(config conf.AuditLogConfiguration, r *http.Request, tx *storage.Connection, actor *User, action AuditAction, ipAddress string, traits map[string]interface{}) error {
-	id := uuid.Must(uuid.NewV4())
-
-	username := actor.GetEmail()
-
-	if actor.GetPhone() != "" {
-		username = actor.GetPhone()
-	}
-
-	payload := map[string]interface{}{
-		"actor_id":       actor.ID,
-		"actor_via_sso":  actor.IsSSOUser,
-		"actor_username": username,
-		"action":         action,
-		"log_type":       ActionLogTypeMap[action],
-	}
-
-	if name, ok := actor.UserMetaData["full_name"]; ok {
-		payload["actor_name"] = name
-	}
-
-	if traits != nil {
-		payload["traits"] = traits
-	}
-
-	observability.LogEntrySetFields(r, logrus.Fields{
-		"auth_event": logrus.Fields(payload),
-	})
-
-	// AUDIT LOGGING FIX: Log each audit event immediately as a separate log entry
-	//
-	// BUG: The observability.LogEntrySetFields() above adds to request context, causing
-	// multiple audit events in the same request to overwrite each other. For example,
-	// refresh token requests call NewAuditLogEntry() twice (token_refreshed, then
-	// token_revoked) but only the last event (token_revoked) was logged.
-	//
-	// SOLUTION: Create immediate separate log entries with "auth_audit_event" key.
-	// This ensures all audit events are captured without overwriting.
-	//
-	// TRANSITION: We keep the existing "auth_event" for backward compatibility during
-	// the transition period. This fix may impact metrics that count audit events,
-	// as previously missing events (like token_refreshed) will now appear in logs.
-	// Eventually, we should remove the observability.LogEntrySetFields() call above
-	// once new logging is proven stable.
-	auditLogPayload := make(map[string]interface{})
-	maps.Copy(auditLogPayload, payload)
-	auditLogPayload["audit_log_id"] = id
-	auditLogPayload["ip_address"] = ipAddress
-	auditLogPayload["created_at"] = time.Now().UTC()
-
-	if requestID := utilities.GetRequestID(r.Context()); requestID != "" {
-		auditLogPayload["request_id"] = requestID
-	}
-	if userAgent := r.Header.Get("User-Agent"); userAgent != "" {
-		auditLogPayload["user_agent"] = userAgent
-	}
-	logrus.WithFields(logrus.Fields{
-		"auth_audit_event": auditLogPayload,
-	}).Info("audit_event")
-
-	if config.DisablePostgres {
-		return nil
-	}
-
-	l := AuditLogEntry{
-		ID:        id,
-		Payload:   JSONMap(payload),
-		IPAddress: ipAddress,
-	}
-
-	if err := tx.Create(&l); err != nil {
-		return errors.Wrap(err, "Database error creating audit log entry")
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
+// AUDIT LOGGING FIX: Log each audit event immediately as a separate log entry
+//
+// BUG: The observability.LogEntrySetFields() above adds to request context, causing
+// multiple audit events in the same request to overwrite each other. For example,
+// refresh token requests call NewAuditLogEntry() twice (token_refreshed, then
+// token_revoked) but only the last event (token_revoked) was logged.
+//
+// SOLUTION: Create immediate separate log entries with "auth_audit_event" key.
+// This ensures all audit events are captured without overwriting.
+//
+// TRANSITION: We keep the existing "auth_event" for backward compatibility during
+// the transition period. This fix may impact metrics that count audit events,
+// as previously missing events (like token_refreshed) will now appear in logs.
+// Eventually, we should remove the observability.LogEntrySetFields() call above
+// once new logging is proven stable.
+
 func FindAuditLogEntries(tx *storage.Connection, filterColumns []string, filterValue string, pageParams *Pagination) ([]*AuditLogEntry, error) {
-	q := tx.Q().Order("created_at desc").Where("instance_id = ?", uuid.Nil)
-
-	if len(filterColumns) > 0 && filterValue != "" {
-		lf := "%" + filterValue + "%"
-
-		builder := bytes.NewBufferString("(")
-		values := make([]interface{}, len(filterColumns))
-
-		for idx, col := range filterColumns {
-			builder.WriteString(fmt.Sprintf("payload->>'%s' ILIKE ?", col))
-			values[idx] = lf
-
-			if idx+1 < len(filterColumns) {
-				builder.WriteString(" OR ")
-			}
-		}
-		builder.WriteString(")")
-
-		q = q.Where(builder.String(), values...)
-	}
-
-	logs := []*AuditLogEntry{}
-	var err error
-	if pageParams != nil {
-		err = q.Paginate(int(pageParams.Page), int(pageParams.PerPage)).All(&logs) // #nosec G115
-		pageParams.Count = uint64(q.Paginator.TotalEntriesSize)                    // #nosec G115
-	} else {
-		err = q.All(&logs)
-	}
-
-	return logs, err
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// #nosec G115
+// #nosec G115

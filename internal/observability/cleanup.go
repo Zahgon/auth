@@ -3,8 +3,6 @@ package observability
 import (
 	"context"
 	"sync"
-
-	"github.com/supabase/auth/internal/utilities"
 )
 
 var (
@@ -13,6 +11,4 @@ var (
 
 // WaitForCleanup waits until all observability long-running goroutines shut
 // down cleanly or until the provided context signals done.
-func WaitForCleanup(ctx context.Context) {
-	utilities.WaitForCleanup(ctx, &cleanupWaitGroup)
-}
+func WaitForCleanup(ctx context.Context) { _ = "STUB: not implemented"; return }

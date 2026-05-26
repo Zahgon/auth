@@ -42,42 +42,6 @@ type Settings struct {
 }
 
 func (a *API) Settings(w http.ResponseWriter, r *http.Request) error {
-	config := a.config
-
-	return sendJSON(w, http.StatusOK, &Settings{
-		ExternalProviders: ProviderSettings{
-			AnonymousUsers: config.External.AnonymousUsers.Enabled,
-			Apple:          config.External.Apple.Enabled,
-			Azure:          config.External.Azure.Enabled,
-			Bitbucket:      config.External.Bitbucket.Enabled,
-			Discord:        config.External.Discord.Enabled,
-			Facebook:       config.External.Facebook.Enabled,
-			Snapchat:       config.External.Snapchat.Enabled,
-			Figma:          config.External.Figma.Enabled,
-			Fly:            config.External.Fly.Enabled,
-			GitHub:         config.External.Github.Enabled,
-			GitLab:         config.External.Gitlab.Enabled,
-			Google:         config.External.Google.Enabled,
-			Kakao:          config.External.Kakao.Enabled,
-			Keycloak:       config.External.Keycloak.Enabled,
-			Linkedin:       config.External.Linkedin.Enabled,
-			LinkedinOIDC:   config.External.LinkedinOIDC.Enabled,
-			Notion:         config.External.Notion.Enabled,
-			Spotify:        config.External.Spotify.Enabled,
-			Slack:          config.External.Slack.Enabled,
-			SlackOIDC:      config.External.SlackOIDC.Enabled,
-			Twitch:         config.External.Twitch.Enabled,
-			Twitter:        config.External.Twitter.Enabled,
-			WorkOS:         config.External.WorkOS.Enabled,
-			Email:          config.External.Email.Enabled,
-			Phone:          config.External.Phone.Enabled,
-			Zoom:           config.External.Zoom.Enabled,
-		},
-		DisableSignup:     config.DisableSignup,
-		MailerAutoconfirm: config.Mailer.Autoconfirm,
-		PhoneAutoconfirm:  config.Sms.Autoconfirm,
-		SmsProvider:       config.Sms.Provider,
-		SAMLEnabled:       config.SAML.Enabled,
-		PasskeysEnabled:   config.Passkey.Enabled,
-	})
+	_ = "STUB: not implemented"
+	return nil
 }

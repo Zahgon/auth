@@ -2,21 +2,14 @@ package models
 
 import (
 	"context"
-	"crypto/sha256"
-	"database/sql"
-	"encoding/base64"
-	"fmt"
-	"strings"
 	"time"
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/gobuffalo/pop/v6"
 	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
 	"github.com/supabase/auth/internal/conf"
 	"github.com/supabase/auth/internal/crypto"
 	"github.com/supabase/auth/internal/storage"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // User respresents a registered user with email/password authentication
@@ -75,559 +68,197 @@ type User struct {
 }
 
 func NewUserWithPasswordHash(phone, email, passwordHash, aud string, userData map[string]interface{}) (*User, error) {
-	if strings.HasPrefix(passwordHash, crypto.Argon2Prefix) {
-		_, err := crypto.ParseArgon2Hash(passwordHash)
-		if err != nil {
-			return nil, err
-		}
-	} else if strings.HasPrefix(passwordHash, crypto.FirebaseScryptPrefix) {
-		_, err := crypto.ParseFirebaseScryptHash(passwordHash)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		// verify that the hash is a bcrypt hash
-		_, err := bcrypt.Cost([]byte(passwordHash))
-		if err != nil {
-			return nil, err
-		}
-	}
-	id := uuid.Must(uuid.NewV4())
-	user := &User{
-		ID:                id,
-		Aud:               aud,
-		Email:             storage.NullString(strings.ToLower(email)),
-		Phone:             storage.NullString(phone),
-		UserMetaData:      userData,
-		EncryptedPassword: &passwordHash,
-	}
-	return user, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// verify that the hash is a bcrypt hash
 
 // NewUser initializes a new user from an email, password and user data.
 func NewUser(phone, email, password, aud string, userData map[string]interface{}) (*User, error) {
-	passwordHash := ""
-
-	if password != "" {
-		pw, err := crypto.GenerateFromPassword(context.Background(), password)
-		if err != nil {
-			return nil, err
-		}
-
-		passwordHash = pw
-	}
-
-	if userData == nil {
-		userData = make(map[string]interface{})
-	}
-
-	id := uuid.Must(uuid.NewV4())
-	user := &User{
-		ID:                id,
-		Aud:               aud,
-		Email:             storage.NullString(strings.ToLower(email)),
-		Phone:             storage.NullString(phone),
-		UserMetaData:      userData,
-		EncryptedPassword: &passwordHash,
-	}
-	return user, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // TableName overrides the table name used by pop
-func (User) TableName() string {
-	tableName := "users"
-	return tableName
-}
+func (User) TableName() string { _ = "STUB: not implemented"; return "" }
 
-func (u *User) HasPassword() bool {
-	var pwd string
-
-	if u.EncryptedPassword != nil {
-		pwd = *u.EncryptedPassword
-	}
-
-	return pwd != ""
-}
+func (u *User) HasPassword() bool { _ = "STUB: not implemented"; return false }
 
 // BeforeSave is invoked before the user is saved to the database
-func (u *User) BeforeSave(tx *pop.Connection) error {
-	if u.EmailConfirmedAt != nil && u.EmailConfirmedAt.IsZero() {
-		u.EmailConfirmedAt = nil
-	}
-	if u.PhoneConfirmedAt != nil && u.PhoneConfirmedAt.IsZero() {
-		u.PhoneConfirmedAt = nil
-	}
-	if u.InvitedAt != nil && u.InvitedAt.IsZero() {
-		u.InvitedAt = nil
-	}
-	if u.ConfirmationSentAt != nil && u.ConfirmationSentAt.IsZero() {
-		u.ConfirmationSentAt = nil
-	}
-	if u.RecoverySentAt != nil && u.RecoverySentAt.IsZero() {
-		u.RecoverySentAt = nil
-	}
-	if u.EmailChangeSentAt != nil && u.EmailChangeSentAt.IsZero() {
-		u.EmailChangeSentAt = nil
-	}
-	if u.PhoneChangeSentAt != nil && u.PhoneChangeSentAt.IsZero() {
-		u.PhoneChangeSentAt = nil
-	}
-	if u.ReauthenticationSentAt != nil && u.ReauthenticationSentAt.IsZero() {
-		u.ReauthenticationSentAt = nil
-	}
-	if u.LastSignInAt != nil && u.LastSignInAt.IsZero() {
-		u.LastSignInAt = nil
-	}
-	if u.BannedUntil != nil && u.BannedUntil.IsZero() {
-		u.BannedUntil = nil
-	}
-	return nil
-}
+func (u *User) BeforeSave(tx *pop.Connection) error { _ = "STUB: not implemented"; return nil }
 
 // IsConfirmed checks if a user has already been
 // registered and confirmed.
-func (u *User) IsConfirmed() bool {
-	return u.EmailConfirmedAt != nil
-}
+func (u *User) IsConfirmed() bool { _ = "STUB: not implemented"; return false }
 
 // HasBeenInvited checks if user has been invited
-func (u *User) HasBeenInvited() bool {
-	return u.InvitedAt != nil
-}
+func (u *User) HasBeenInvited() bool { _ = "STUB: not implemented"; return false }
 
 // IsPhoneConfirmed checks if a user's phone has already been
 // registered and confirmed.
-func (u *User) IsPhoneConfirmed() bool {
-	return u.PhoneConfirmedAt != nil
-}
+func (u *User) IsPhoneConfirmed() bool { _ = "STUB: not implemented"; return false }
 
 // SetRole sets the users Role to roleName
 func (u *User) SetRole(tx *storage.Connection, roleName string) error {
-	u.Role = strings.TrimSpace(roleName)
-	return tx.UpdateOnly(u, "role")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // HasRole returns true when the users role is set to roleName
-func (u *User) HasRole(roleName string) bool {
-	return u.Role == roleName
-}
+func (u *User) HasRole(roleName string) bool { _ = "STUB: not implemented"; return false }
 
 // GetEmail returns the user's email as a string
-func (u *User) GetEmail() string {
-	return string(u.Email)
-}
+func (u *User) GetEmail() string { _ = "STUB: not implemented"; return "" }
 
 // GetPhone returns the user's phone number as a string
-func (u *User) GetPhone() string {
-	return string(u.Phone)
-}
+func (u *User) GetPhone() string { _ = "STUB: not implemented"; return "" }
 
 // UpdateUserMetaData sets all user data from a map of updates,
 // ensuring that it doesn't override attributes that are not
 // in the provided map.
 func (u *User) UpdateUserMetaData(tx *storage.Connection, updates map[string]interface{}) error {
-	if u.UserMetaData == nil {
-		u.UserMetaData = updates
-	} else {
-		for key, value := range updates {
-			if value != nil {
-				u.UserMetaData[key] = value
-			} else {
-				delete(u.UserMetaData, key)
-			}
-		}
-	}
-	return tx.UpdateOnly(u, "raw_user_meta_data")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // UpdateAppMetaData updates all app data from a map of updates
 func (u *User) UpdateAppMetaData(tx *storage.Connection, updates map[string]interface{}) error {
-	if u.AppMetaData == nil {
-		u.AppMetaData = updates
-	} else {
-		for key, value := range updates {
-			if value != nil {
-				u.AppMetaData[key] = value
-			} else {
-				delete(u.AppMetaData, key)
-			}
-		}
-	}
-	return tx.UpdateOnly(u, "raw_app_meta_data")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // UpdateAppMetaDataProviders updates the provider field in AppMetaData column
 func (u *User) UpdateAppMetaDataProviders(tx *storage.Connection) error {
-	providers, terr := FindProvidersByUser(tx, u)
-	if terr != nil {
-		return terr
-	}
-	payload := map[string]interface{}{
-		"providers": providers,
-	}
-	if len(providers) > 0 {
-		payload["provider"] = providers[0]
-	}
-	return u.UpdateAppMetaData(tx, payload)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // UpdateUserEmail updates the user's email to one of the identity's email
 // if the current email used doesn't match any of the identities email
 func (u *User) UpdateUserEmailFromIdentities(tx *storage.Connection) error {
-	identities, terr := FindIdentitiesByUserID(tx, u.ID)
-	if terr != nil {
-		return terr
-	}
-	for _, i := range identities {
-		if u.GetEmail() == i.GetEmail() {
-			// there's an existing identity that uses the same email
-			// so the user's email can be kept
-			return nil
-		}
-	}
-
-	var primaryIdentity *Identity
-	for _, i := range identities {
-		if _, terr := FindUserByEmailAndAudience(tx, i.GetEmail(), u.Aud); terr != nil {
-			if IsNotFoundError(terr) {
-				// the identity's email is not used by another user
-				// so we can set it as the primary identity
-				primaryIdentity = i
-				break
-			}
-			return terr
-		}
-	}
-	if primaryIdentity == nil {
-		return UserEmailUniqueConflictError{}
-	}
-	// default to the first identity's email
-	if terr := u.SetEmail(tx, primaryIdentity.GetEmail()); terr != nil {
-		return terr
-	}
-	if primaryIdentity.GetEmail() == "" {
-		u.EmailConfirmedAt = nil
-		if terr := tx.UpdateOnly(u, "email_confirmed_at"); terr != nil {
-			return terr
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
+// there's an existing identity that uses the same email
+// so the user's email can be kept
+
+// the identity's email is not used by another user
+// so we can set it as the primary identity
+
+// default to the first identity's email
+
 // SetEmail sets the user's email
 func (u *User) SetEmail(tx *storage.Connection, email string) error {
-	u.Email = storage.NullString(email)
-	return tx.UpdateOnly(u, "email")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // SetPhone sets the user's phone
 func (u *User) SetPhone(tx *storage.Connection, phone string) error {
-	u.Phone = storage.NullString(phone)
-	return tx.UpdateOnly(u, "phone")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (u *User) SetPassword(ctx context.Context, password string, encrypt bool, encryptionKeyID, encryptionKey string) error {
-	if password == "" {
-		u.EncryptedPassword = nil
-		return nil
-	}
-
-	pw, err := crypto.GenerateFromPassword(ctx, password)
-	if err != nil {
-		return err
-	}
-
-	u.EncryptedPassword = &pw
-	if encrypt {
-		es, err := crypto.NewEncryptedString(u.ID.String(), []byte(pw), encryptionKeyID, encryptionKey)
-		if err != nil {
-			return err
-		}
-
-		encryptedPassword := es.String()
-		u.EncryptedPassword = &encryptedPassword
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // UpdatePassword updates the user's password. Use SetPassword outside of a transaction first!
 func (u *User) UpdatePassword(tx *storage.Connection, sessionID *uuid.UUID) error {
+	_ = "STUB: not implemented"
 	// These need to be reset because password change may mean the user no longer trusts the actions performed by the previous password.
-	u.ConfirmationToken = ""
-	u.ConfirmationSentAt = nil
-	u.RecoveryToken = ""
-	u.RecoverySentAt = nil
-	u.EmailChangeTokenCurrent = ""
-	u.EmailChangeTokenNew = ""
-	u.EmailChangeSentAt = nil
-	u.PhoneChangeToken = ""
-	u.PhoneChangeSentAt = nil
-	u.ReauthenticationToken = ""
-	u.ReauthenticationSentAt = nil
-
-	if err := tx.UpdateOnly(u, "encrypted_password", "confirmation_token", "confirmation_sent_at", "recovery_token", "recovery_sent_at", "email_change_token_current", "email_change_token_new", "email_change_sent_at", "phone_change_token", "phone_change_sent_at", "reauthentication_token", "reauthentication_sent_at"); err != nil {
-		return err
-	}
-
-	if err := ClearAllOneTimeTokensForUser(tx, u.ID); err != nil {
-		return err
-	}
-
-	if sessionID == nil {
-		// log out user from all sessions to ensure reauthentication after password change
-		return Logout(tx, u.ID)
-	} else {
-		// log out user from all other sessions to ensure reauthentication after password change
-		return LogoutAllExceptMe(tx, *sessionID, u.ID)
-	}
+	return nil
 }
+
+// log out user from all sessions to ensure reauthentication after password change
+
+// log out user from all other sessions to ensure reauthentication after password change
 
 // Authenticate a user from a password
 func (u *User) Authenticate(ctx context.Context, tx *storage.Connection, password string, decryptionKeys map[string]string, encrypt bool, encryptionKeyID string) (bool, bool, error) {
-	if u.EncryptedPassword == nil {
-		return false, false, nil
-	}
-
-	hash := *u.EncryptedPassword
-
-	if hash == "" {
-		return false, false, nil
-	}
-
-	es := crypto.ParseEncryptedString(hash)
-	if es != nil {
-		h, err := es.Decrypt(u.ID.String(), decryptionKeys)
-		if err != nil {
-			return false, false, err
-		}
-
-		hash = string(h)
-	}
-
-	compareErr := crypto.CompareHashAndPassword(ctx, hash, password)
-
-	if !strings.HasPrefix(hash, crypto.Argon2Prefix) && !strings.HasPrefix(hash, crypto.FirebaseScryptPrefix) {
-		// check if cost exceeds default cost or is too low
-		cost, err := bcrypt.Cost([]byte(hash))
-		if err != nil {
-			return compareErr == nil, false, err
-		}
-
-		if cost > bcrypt.DefaultCost || cost == bcrypt.MinCost {
-			// don't bother with encrypting the password in Authenticate
-			// since it's handled separately
-			if err := u.SetPassword(ctx, password, false, "", ""); err != nil {
-				return compareErr == nil, false, err
-			}
-		}
-	}
-
-	return compareErr == nil, encrypt && (es == nil || es.ShouldReEncrypt(encryptionKeyID)), nil
+	_ = "STUB: not implemented"
+	return false, false, nil
 }
+
+// check if cost exceeds default cost or is too low
+
+// don't bother with encrypting the password in Authenticate
+// since it's handled separately
 
 // ConfirmReauthentication resets the reauthentication token
 func (u *User) ConfirmReauthentication(tx *storage.Connection) error {
-	u.ReauthenticationToken = ""
-	if err := tx.UpdateOnly(u, "reauthentication_token"); err != nil {
-		return err
-	}
-
-	if err := ClearAllOneTimeTokensForUser(tx, u.ID); err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Confirm resets the confimation token and sets the confirm timestamp
-func (u *User) Confirm(tx *storage.Connection) error {
-	u.ConfirmationToken = ""
-	now := time.Now()
-	u.EmailConfirmedAt = &now
-
-	if err := tx.UpdateOnly(u, "confirmation_token", "email_confirmed_at"); err != nil {
-		return err
-	}
-
-	if err := u.UpdateUserMetaData(tx, map[string]interface{}{
-		"email_verified": true,
-	}); err != nil {
-		return err
-	}
-
-	if err := ClearAllOneTimeTokensForUser(tx, u.ID); err != nil {
-		return err
-	}
-
-	return nil
-}
+func (u *User) Confirm(tx *storage.Connection) error { _ = "STUB: not implemented"; return nil }
 
 // ConfirmPhone resets the confimation token and sets the confirm timestamp
-func (u *User) ConfirmPhone(tx *storage.Connection) error {
-	u.ConfirmationToken = ""
-	now := time.Now()
-	u.PhoneConfirmedAt = &now
-	if err := tx.UpdateOnly(u, "confirmation_token", "phone_confirmed_at"); err != nil {
-		return err
-	}
-
-	return ClearAllOneTimeTokensForUser(tx, u.ID)
-}
+func (u *User) ConfirmPhone(tx *storage.Connection) error { _ = "STUB: not implemented"; return nil }
 
 // UpdateLastSignInAt update field last_sign_in_at for user according to specified field
 func (u *User) UpdateLastSignInAt(tx *storage.Connection) error {
-	return tx.UpdateOnly(u, "last_sign_in_at")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ConfirmEmailChange confirm the change of email for a user
 func (u *User) ConfirmEmailChange(tx *storage.Connection, status int) error {
-	email := u.EmailChange
-
-	u.Email = storage.NullString(email)
-	u.EmailChange = ""
-	u.EmailChangeTokenCurrent = ""
-	u.EmailChangeTokenNew = ""
-	u.EmailChangeConfirmStatus = status
-
-	if err := tx.UpdateOnly(
-		u,
-		"email",
-		"email_change",
-		"email_change_token_current",
-		"email_change_token_new",
-		"email_change_confirm_status",
-	); err != nil {
-		return err
-	}
-
-	if err := ClearAllOneTimeTokensForUser(tx, u.ID); err != nil {
-		return err
-	}
-
-	if !u.IsConfirmed() {
-		if err := u.Confirm(tx); err != nil {
-			return err
-		}
-	}
-
-	identity, err := FindIdentityByIdAndProvider(tx, u.ID.String(), "email")
-	if err != nil {
-		if IsNotFoundError(err) {
-			// no email identity, not an error
-			return nil
-		}
-		return err
-	}
-
-	if _, ok := identity.IdentityData["email"]; ok {
-		identity.IdentityData["email"] = email
-		if err := tx.UpdateOnly(identity, "identity_data"); err != nil {
-			return err
-		}
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// no email identity, not an error
 
 // ConfirmPhoneChange confirms the change of phone for a user
 func (u *User) ConfirmPhoneChange(tx *storage.Connection) error {
-	now := time.Now()
-	phone := u.PhoneChange
-
-	u.Phone = storage.NullString(phone)
-	u.PhoneChange = ""
-	u.PhoneChangeToken = ""
-	u.PhoneConfirmedAt = &now
-
-	if err := tx.UpdateOnly(
-		u,
-		"phone",
-		"phone_change",
-		"phone_change_token",
-		"phone_confirmed_at",
-	); err != nil {
-		return err
-	}
-
-	if err := ClearAllOneTimeTokensForUser(tx, u.ID); err != nil {
-		return err
-	}
-
-	identity, err := FindIdentityByIdAndProvider(tx, u.ID.String(), "phone")
-	if err != nil {
-		if IsNotFoundError(err) {
-			// no phone identity, not an error
-			return nil
-		}
-
-		return err
-	}
-
-	if _, ok := identity.IdentityData["phone"]; ok {
-		identity.IdentityData["phone"] = phone
-	}
-
-	if err := tx.UpdateOnly(identity, "identity_data"); err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
-// Recover resets the recovery token
-func (u *User) Recover(tx *storage.Connection) error {
-	u.RecoveryToken = ""
-	if err := tx.UpdateOnly(u, "recovery_token"); err != nil {
-		return err
-	}
+// no phone identity, not an error
 
-	return ClearAllOneTimeTokensForUser(tx, u.ID)
-}
+// Recover resets the recovery token
+func (u *User) Recover(tx *storage.Connection) error { _ = "STUB: not implemented"; return nil }
 
 // HighestPossibleAAL returns the AAL level that this user can obtain. Derived
 // from the number of verified MFA factors associated with the user object.
 func (u *User) HighestPossibleAAL() AuthenticatorAssuranceLevel {
-	for _, factor := range u.Factors {
-		if factor.Status == FactorStateVerified.String() {
-			return AAL2
-		}
-	}
-
-	return AAL1
+	_ = "STUB: not implemented"
+	return *new(AuthenticatorAssuranceLevel)
 }
 
 // CountOtherUsers counts how many other users exist besides the one provided
 func CountOtherUsers(tx *storage.Connection, id uuid.UUID) (int, error) {
-	userCount, err := tx.Q().Where("instance_id = ? and id != ?", uuid.Nil, id).Count(&User{})
-	return userCount, errors.Wrap(err, "error finding registered users")
+	_ = "STUB: not implemented"
+	return 0, nil
 }
 
 func findUser(tx *storage.Connection, query string, args ...interface{}) (*User, error) {
-	obj := &User{}
-	if err := tx.Eager().Q().Where(query, args...).First(obj); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, UserNotFoundError{}
-		}
-		return nil, errors.Wrap(err, "error finding user")
-	}
-
-	return obj, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // FindUserByEmailAndAudience finds a user with the matching email and audience.
 func FindUserByEmailAndAudience(tx *storage.Connection, email, aud string) (*User, error) {
-	return findUser(tx, "instance_id = ? and LOWER(email) = ? and aud = ? and is_sso_user = false", uuid.Nil, strings.ToLower(email), aud)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // FindUserByPhoneAndAudience finds a user with the matching email and audience.
 func FindUserByPhoneAndAudience(tx *storage.Connection, phone, aud string) (*User, error) {
-	return findUser(tx, "instance_id = ? and phone = ? and aud = ? and is_sso_user = false", uuid.Nil, phone, aud)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // FindUserByID finds a user matching the provided ID.
 func FindUserByID(tx *storage.Connection, id uuid.UUID) (*User, error) {
-	return findUser(tx, "instance_id = ? and id = ?", uuid.Nil, id)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // FindUserWithRefreshToken finds a user from the provided refresh token. If
@@ -638,425 +269,150 @@ func FindUserByID(tx *storage.Connection, id uuid.UUID) (*User, error) {
 //
 // Second value returned is either *models.RefreshToken or *crypto.RefreshToken.
 func FindUserWithRefreshToken(tx *storage.Connection, dbEncryption conf.DatabaseEncryptionConfiguration, token string, forUpdate bool) (*User, any, *Session, error) {
-	if len(token) < 12 {
+	_ = "STUB: not implemented"
+	return nil,
+
 		// not a valid refresh token so don't bother looking it up in the database
-		return nil, nil, nil, SessionNotFoundError{}
-	}
-
-	if len(token) == 12 {
-		return findUserWithLegacyRefreshToken(tx, token, forUpdate)
-	}
-
-	return findUserWithRefreshToken(tx, dbEncryption, token, forUpdate)
+		*new(any), nil, nil
 }
 
 func findUserWithRefreshToken(tx *storage.Connection, dbEncryption conf.DatabaseEncryptionConfiguration, token string, forUpdate bool) (*User, *crypto.RefreshToken, *Session, error) {
-	refreshToken, err := crypto.ParseRefreshToken(token)
-	if err != nil {
-		// refresh token is not valid
-		return nil, nil, nil, SessionNotFoundError{}
-	}
-
-	session, err := FindSessionByID(tx, refreshToken.SessionID, forUpdate)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	if session.RefreshTokenHmacKey == nil || session.RefreshTokenCounter == nil {
-		// if the session is not set up to support these encoded refresh tokens it's as if it doesn't exist
-		// meaning someone is hand-crafting tokens for uuids that exist
-		return nil, nil, nil, SessionNotFoundError{}
-	}
-
-	key, shouldReEncrypt, err := session.GetRefreshTokenHmacKey(dbEncryption)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	if !refreshToken.CheckSignature(key) {
-		// refresh token signature is not valid for this session
-		return nil, nil, nil, SessionNotFoundError{}
-	}
-
-	if shouldReEncrypt && forUpdate {
-		err := session.ReEncryptRefreshTokenHmacKey(tx, dbEncryption)
-		if err != nil {
-			return nil, nil, nil, err
-		}
-	}
-
-	user, err := FindUserByID(tx, session.UserID)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	return user, refreshToken, session, nil
+	_ = "STUB: not implemented"
+	return nil, nil, nil, nil
 }
+
+// refresh token is not valid
+
+// if the session is not set up to support these encoded refresh tokens it's as if it doesn't exist
+// meaning someone is hand-crafting tokens for uuids that exist
+
+// refresh token signature is not valid for this session
 
 func findUserWithLegacyRefreshToken(tx *storage.Connection, token string, forUpdate bool) (*User, any, *Session, error) {
-	refreshToken := &RefreshToken{}
-
-	if forUpdate {
-		// pop does not provide us with a way to execute FOR UPDATE
-		// queries which lock the rows affected by the query from
-		// being accessed by any other transaction that also uses FOR
-		// UPDATE
-		if err := tx.RawQuery(fmt.Sprintf("SELECT * FROM %q WHERE token = ? LIMIT 1 FOR UPDATE SKIP LOCKED;", refreshToken.TableName()), token).First(refreshToken); err != nil {
-			if errors.Cause(err) == sql.ErrNoRows {
-				return nil, nil, nil, RefreshTokenNotFoundError{}
-			}
-
-			return nil, nil, nil, errors.Wrap(err, "error finding refresh token for update")
-		}
-	}
-
-	// once the rows are locked (if forUpdate was true), we can query again using pop
-	if err := tx.Where("token = ?", token).First(refreshToken); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, nil, nil, RefreshTokenNotFoundError{}
-		}
-		return nil, nil, nil, errors.Wrap(err, "error finding refresh token")
-	}
-
-	user, err := FindUserByID(tx, refreshToken.UserID)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-
-	var session *Session
-
-	if refreshToken.SessionId != nil {
-		sessionId := *refreshToken.SessionId
-
-		if sessionId != uuid.Nil {
-			session, err = FindSessionByID(tx, sessionId, forUpdate)
-			if err != nil {
-				if forUpdate {
-					return nil, nil, nil, err
-				}
-
-				if !IsNotFoundError(err) {
-					return nil, nil, nil, errors.Wrap(err, "error finding session from refresh token")
-				}
-
-				// otherwise, there's no session for this refresh token
-			}
-		}
-	}
-
-	return user, refreshToken, session, nil
+	_ = "STUB: not implemented"
+	return nil, *new(any), nil, nil
 }
+
+// pop does not provide us with a way to execute FOR UPDATE
+// queries which lock the rows affected by the query from
+// being accessed by any other transaction that also uses FOR
+// UPDATE
+
+// once the rows are locked (if forUpdate was true), we can query again using pop
+
+// otherwise, there's no session for this refresh token
 
 // FindUsersInAudience finds users with the matching audience.
 func FindUsersInAudience(tx *storage.Connection, aud string, pageParams *Pagination, sortParams *SortParams, filter string) ([]*User, error) {
-	users := []*User{}
-	q := tx.Q().Where("instance_id = ? and aud = ?", uuid.Nil, aud)
-
-	if filter != "" {
-		lf := "%" + filter + "%"
-		// we must specify the collation in order to get case insensitive search for the JSON column
-		q = q.Where("(email LIKE ? OR raw_user_meta_data->>'full_name' ILIKE ?)", lf, lf)
-	}
-
-	if sortParams != nil && len(sortParams.Fields) > 0 {
-		for _, field := range sortParams.Fields {
-			q = q.Order(field.Name + " " + string(field.Dir))
-		}
-	}
-
-	var err error
-	if pageParams != nil {
-		err = q.Paginate(int(pageParams.Page), int(pageParams.PerPage)).All(&users) // #nosec G115
-		pageParams.Count = uint64(q.Paginator.TotalEntriesSize)                     // #nosec G115
-	} else {
-		err = q.All(&users)
-	}
-
-	return users, err
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// we must specify the collation in order to get case insensitive search for the JSON column
+
+// #nosec G115
+// #nosec G115
 
 // IsDuplicatedEmail returns whether a user exists with a matching email and
 // audience importantly in the *default* identity linking domain (meaning SSO
 // accounts and similar are not considered).
 // If a currentUser is provided, we will need to filter out any identities that belong to the current user.
 func IsDuplicatedEmail(tx *storage.Connection, email, aud string, currentUser *User, ownDomainProviders []string) (*User, error) {
-	var identities []Identity
-
-	if err := tx.Eager().Q().Where("email = ?", strings.ToLower(email)).All(&identities); err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, nil
-		}
-
-		return nil, errors.Wrap(err, "unable to find identity by email for duplicates")
-	}
-
-	userIDs := make(map[string]uuid.UUID)
-	for _, identity := range identities {
-		if _, ok := userIDs[identity.UserID.String()]; !ok {
-			if GetAccountLinkingDomain(identity.Provider, ownDomainProviders) == "default" {
-				userIDs[identity.UserID.String()] = identity.UserID
-			}
-		}
-	}
-
-	var currentUserId uuid.UUID
-	if currentUser != nil {
-		currentUserId = currentUser.ID
-	}
-
-	for _, userID := range userIDs {
-		if userID != currentUserId {
-			user, err := FindUserByID(tx, userID)
-			if err != nil {
-				return nil, errors.Wrap(err, "unable to find user from email identity for duplicates")
-			}
-			if user.Aud == aud {
-				return user, nil
-			}
-		}
-	}
-
-	// out of an abundance of caution, if nothing was found via the
-	// identities table we also do a final check on the users table
-	user, err := FindUserByEmailAndAudience(tx, email, aud)
-	if err != nil && !IsNotFoundError(err) {
-		return nil, errors.Wrap(err, "unable to find user email address for duplicates")
-	}
-
-	return user, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// out of an abundance of caution, if nothing was found via the
+// identities table we also do a final check on the users table
 
 // IsDuplicatedPhone checks if the phone number already exists in the users table
 func IsDuplicatedPhone(tx *storage.Connection, phone, aud string) (bool, error) {
-	_, err := FindUserByPhoneAndAudience(tx, phone, aud)
-	if err != nil {
-		if IsNotFoundError(err) {
-			return false, nil
-		}
-		return false, err
-	}
-	return true, nil
+	_ = "STUB: not implemented"
+	return false, nil
 }
 
 // Ban a user for a given duration.
 func (u *User) Ban(tx *storage.Connection, duration time.Duration) error {
-	if duration == time.Duration(0) {
-		u.BannedUntil = nil
-	} else {
-		t := time.Now().Add(duration)
-		u.BannedUntil = &t
-	}
-	return tx.UpdateOnly(u, "banned_until")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // IsBanned checks if a user is banned or not
-func (u *User) IsBanned() bool {
-	if u.BannedUntil == nil {
-		return false
-	}
-	return time.Now().Before(*u.BannedUntil)
-}
+func (u *User) IsBanned() bool { _ = "STUB: not implemented"; return false }
 
-func (u *User) HasMFAEnabled() bool {
-	for _, factor := range u.Factors {
-		if factor.IsVerified() {
-			return true
-		}
-	}
-
-	return false
-}
+func (u *User) HasMFAEnabled() bool { _ = "STUB: not implemented"; return false }
 
 func (u *User) UpdateBannedUntil(tx *storage.Connection) error {
-	return tx.UpdateOnly(u, "banned_until")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // RemoveUnconfirmedIdentities removes potentially malicious unconfirmed identities from a user (if any)
 func (u *User) RemoveUnconfirmedIdentities(tx *storage.Connection, identity *Identity) error {
-	if identity.Provider != "email" && identity.Provider != "phone" {
-		// user is unconfirmed so the password should be reset
-		u.EncryptedPassword = nil
-		if terr := tx.UpdateOnly(u, "encrypted_password"); terr != nil {
-			return terr
-		}
-	}
-
-	// user is unconfirmed so existing user_metadata should be overwritten
-	// to use the current identity metadata
-	u.UserMetaData = identity.IdentityData
-	if terr := u.UpdateUserMetaData(tx, u.UserMetaData); terr != nil {
-		return terr
-	}
-
-	// finally, remove all identities except the current identity being authenticated
-	for i := range u.Identities {
-		if u.Identities[i].ID != identity.ID {
-			if terr := tx.Destroy(&u.Identities[i]); terr != nil {
-				return terr
-			}
-		}
-	}
-
-	// user is unconfirmed so none of the providers associated to it are verified yet
-	// only the current provider should be kept
-	if terr := u.UpdateAppMetaDataProviders(tx); terr != nil {
-		return terr
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// user is unconfirmed so the password should be reset
+
+// user is unconfirmed so existing user_metadata should be overwritten
+// to use the current identity metadata
+
+// finally, remove all identities except the current identity being authenticated
+
+// user is unconfirmed so none of the providers associated to it are verified yet
+// only the current provider should be kept
 
 // SoftDeleteUser performs a soft deletion on the user by obfuscating and clearing certain fields
-func (u *User) SoftDeleteUser(tx *storage.Connection) error {
-	u.Email = storage.NullString(obfuscateEmail(u, u.GetEmail()))
-	u.Phone = storage.NullString(obfuscatePhone(u, u.GetPhone()))
-	u.EmailChange = obfuscateEmail(u, u.EmailChange)
-	u.PhoneChange = obfuscatePhone(u, u.PhoneChange)
-	u.EncryptedPassword = nil
-	u.ConfirmationToken = ""
-	u.RecoveryToken = ""
-	u.EmailChangeTokenCurrent = ""
-	u.EmailChangeTokenNew = ""
-	u.PhoneChangeToken = ""
+func (u *User) SoftDeleteUser(tx *storage.Connection) error { _ = "STUB: not implemented"; return nil }
 
-	// set deleted_at time
-	now := time.Now()
-	u.DeletedAt = &now
+// set deleted_at time
 
-	if err := tx.UpdateOnly(
-		u,
-		"email",
-		"phone",
-		"encrypted_password",
-		"email_change",
-		"phone_change",
-		"confirmation_token",
-		"recovery_token",
-		"email_change_token_current",
-		"email_change_token_new",
-		"phone_change_token",
-		"deleted_at",
-	); err != nil {
-		return err
-	}
+// set raw_user_meta_data to {}
 
-	if err := ClearAllOneTimeTokensForUser(tx, u.ID); err != nil {
-		return err
-	}
-
-	// set raw_user_meta_data to {}
-	userMetaDataUpdates := map[string]interface{}{}
-	for k := range u.UserMetaData {
-		userMetaDataUpdates[k] = nil
-	}
-
-	if err := u.UpdateUserMetaData(tx, userMetaDataUpdates); err != nil {
-		return err
-	}
-
-	// set raw_app_meta_data to {}
-	appMetaDataUpdates := map[string]interface{}{}
-	for k := range u.AppMetaData {
-		appMetaDataUpdates[k] = nil
-	}
-
-	if err := u.UpdateAppMetaData(tx, appMetaDataUpdates); err != nil {
-		return err
-	}
-
-	if err := Logout(tx, u.ID); err != nil {
-		return err
-	}
-
-	return nil
-}
+// set raw_app_meta_data to {}
 
 // SoftDeleteUserIdentities performs a soft deletion on all identities associated to a user
 func (u *User) SoftDeleteUserIdentities(tx *storage.Connection) error {
-	identities, err := FindIdentitiesByUserID(tx, u.ID)
-	if err != nil {
-		return err
-	}
-
-	// set identity_data to {}
-	for _, identity := range identities {
-		identityDataUpdates := map[string]interface{}{}
-		for k := range identity.IdentityData {
-			identityDataUpdates[k] = nil
-		}
-		if err := identity.UpdateIdentityData(tx, identityDataUpdates); err != nil {
-			return err
-		}
-		// updating the identity.ID has to happen last since the primary key is on (provider, id)
-		// we use RawQuery here instead of UpdateOnly because UpdateOnly relies on the primary key of Identity
-		if err := tx.RawQuery(
-			"update "+
-				(&pop.Model{Value: Identity{}}).TableName()+
-				" set provider_id = ? where id = ?",
-			obfuscateIdentityProviderId(identity),
-			identity.ID,
-		).Exec(); err != nil {
-			return err
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
+// set identity_data to {}
+
+// updating the identity.ID has to happen last since the primary key is on (provider, id)
+// we use RawQuery here instead of UpdateOnly because UpdateOnly relies on the primary key of Identity
+
 func (u *User) FindOwnedFactorByID(tx *storage.Connection, factorID uuid.UUID) (*Factor, error) {
-	var factor Factor
-	err := tx.Where("user_id = ? AND id = ?", u.ID, factorID).First(&factor)
-	if err != nil {
-		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, &FactorNotFoundError{}
-		}
-		return nil, err
-	}
-	return &factor, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (user *User) WebAuthnID() []byte {
-	return []byte(user.ID.String())
-}
+func (user *User) WebAuthnID() []byte { _ = "STUB: not implemented"; return nil }
 
-func (user *User) WebAuthnName() string {
-	return user.Email.String()
-}
+func (user *User) WebAuthnName() string { _ = "STUB: not implemented"; return "" }
 
-func (user *User) WebAuthnDisplayName() string {
-	return user.Email.String()
-}
+func (user *User) WebAuthnDisplayName() string { _ = "STUB: not implemented"; return "" }
 
 func (user *User) WebAuthnCredentials() []webauthn.Credential {
-	var credentials []webauthn.Credential
-
-	for _, factor := range user.Factors {
-		if factor.IsVerified() && factor.FactorType == WebAuthn {
-			credential := factor.WebAuthnCredential.Credential
-			credentials = append(credentials, credential)
-		}
-	}
-
-	return credentials
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func obfuscateValue(id uuid.UUID, value string) string {
-	hash := sha256.Sum256([]byte(id.String() + value))
-	return base64.RawURLEncoding.EncodeToString(hash[:])
-}
+func obfuscateValue(id uuid.UUID, value string) string { _ = "STUB: not implemented"; return "" }
 
-func obfuscateEmail(u *User, email string) string {
-	return obfuscateValue(u.ID, email)
-}
+func obfuscateEmail(u *User, email string) string { _ = "STUB: not implemented"; return "" }
 
 func obfuscatePhone(u *User, phone string) string {
+	_ = "STUB: not implemented"
 	// Field converted from VARCHAR(15) to text
-	return obfuscateValue(u.ID, phone)[:15]
+	return ""
 }
 
-func obfuscateIdentityProviderId(identity *Identity) string {
-	return obfuscateValue(identity.UserID, identity.Provider+":"+identity.ProviderID)
-}
+func obfuscateIdentityProviderId(identity *Identity) string { _ = "STUB: not implemented"; return "" }
 
 // FindUserByPhoneChangeAndAudience finds a user with the matching phone change and audience.
 func FindUserByPhoneChangeAndAudience(tx *storage.Connection, phone, aud string) (*User, error) {
-	return findUser(tx, "instance_id = ? and phone_change = ? and aud = ? and is_sso_user = false", uuid.Nil, phone, aud)
+	_ = "STUB: not implemented"
+	return nil, nil
 }

@@ -68,44 +68,10 @@ type Web3Data struct {
 var logger = logrus.StandardLogger().WithField("metering", true)
 
 func RecordLogin(loginType LoginType, userID uuid.UUID, data *LoginData) {
-	fields := logrus.Fields{
-		"action":       "login",
-		"login_method": string(loginType),
-		"instance_id":  uuid.Nil.String(),
-		"user_id":      userID.String(),
-	}
-
-	if data != nil {
-		if data.Provider != "" {
-			fields["provider"] = data.Provider
-		}
-
-		// Add Web3 context fields
-		if data.Web3 != nil {
-			if data.Web3.Chain != "" {
-				fields["web3_chain"] = data.Web3.Chain
-			}
-			if data.Web3.Network != "" {
-				fields["web3_network"] = data.Web3.Network
-			}
-			if data.Web3.Address != "" {
-				fields["web3_address"] = data.Web3.Address
-			}
-			if data.Web3.Domain != "" {
-				fields["web3_domain"] = data.Web3.Domain
-			}
-			if data.Web3.URI != "" {
-				fields["web3_uri"] = data.Web3.URI
-			}
-		}
-
-		// Add any extra fields
-		if data.Extra != nil {
-			for key, value := range data.Extra {
-				fields[key] = value
-			}
-		}
-	}
-
-	logger.WithFields(fields).Info("Login")
+	_ = "STUB: not implemented"
+	return
 }
+
+// Add Web3 context fields
+
+// Add any extra fields

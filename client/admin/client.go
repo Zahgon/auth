@@ -4,17 +4,11 @@
 package admin
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"strings"
 	"time"
 
-	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -279,43 +273,29 @@ type ClientOption func(*Client) error
 
 // Creates a new Client, with reasonable defaults
 func NewClient(server string, opts ...ClientOption) (*Client, error) {
+	_ = "STUB: not implemented"
 	// create a client with sane default values
-	client := Client{
-		Server: server,
-	}
-	// mutate client and add all optional params
-	for _, o := range opts {
-		if err := o(&client); err != nil {
-			return nil, err
-		}
-	}
-	// ensure the server URL always has a trailing slash
-	if !strings.HasSuffix(client.Server, "/") {
-		client.Server += "/"
-	}
-	// create httpClient, if not already present
-	if client.Client == nil {
-		client.Client = &http.Client{}
-	}
-	return &client, nil
+	return nil, nil
 }
+
+// mutate client and add all optional params
+
+// ensure the server URL always has a trailing slash
+
+// create httpClient, if not already present
 
 // WithHTTPClient allows overriding the default Doer, which is
 // automatically created using http.Client. This is useful for tests.
 func WithHTTPClient(doer HttpRequestDoer) ClientOption {
-	return func(c *Client) error {
-		c.Client = doer
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(ClientOption)
 }
 
 // WithRequestEditorFn allows setting up a callback function, which will be
 // called right before sending the request. This can be used to mutate the request.
 func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
-	return func(c *Client) error {
-		c.RequestEditors = append(c.RequestEditors, fn)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(ClientOption)
 }
 
 // The interface specification for the client above.
@@ -379,904 +359,238 @@ type ClientInterface interface {
 }
 
 func (c *Client) GetAdminAudit(ctx context.Context, params *GetAdminAuditParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAdminAuditRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PostAdminGenerateLinkWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostAdminGenerateLinkRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PostAdminGenerateLink(ctx context.Context, body PostAdminGenerateLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostAdminGenerateLinkRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) GetAdminSsoProviders(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAdminSsoProvidersRequest(c.Server)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PostAdminSsoProvidersWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostAdminSsoProvidersRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PostAdminSsoProviders(ctx context.Context, body PostAdminSsoProvidersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostAdminSsoProvidersRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) DeleteAdminSsoProvidersSsoProviderId(ctx context.Context, ssoProviderId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteAdminSsoProvidersSsoProviderIdRequest(c.Server, ssoProviderId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) GetAdminSsoProvidersSsoProviderId(ctx context.Context, ssoProviderId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAdminSsoProvidersSsoProviderIdRequest(c.Server, ssoProviderId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PutAdminSsoProvidersSsoProviderIdWithBody(ctx context.Context, ssoProviderId openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPutAdminSsoProvidersSsoProviderIdRequestWithBody(c.Server, ssoProviderId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PutAdminSsoProvidersSsoProviderId(ctx context.Context, ssoProviderId openapi_types.UUID, body PutAdminSsoProvidersSsoProviderIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPutAdminSsoProvidersSsoProviderIdRequest(c.Server, ssoProviderId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) GetAdminUsers(ctx context.Context, params *GetAdminUsersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAdminUsersRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) DeleteAdminUsersUserId(ctx context.Context, userId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteAdminUsersUserIdRequest(c.Server, userId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) GetAdminUsersUserId(ctx context.Context, userId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAdminUsersUserIdRequest(c.Server, userId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PutAdminUsersUserIdWithBody(ctx context.Context, userId openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPutAdminUsersUserIdRequestWithBody(c.Server, userId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PutAdminUsersUserId(ctx context.Context, userId openapi_types.UUID, body PutAdminUsersUserIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPutAdminUsersUserIdRequest(c.Server, userId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) GetAdminUsersUserIdFactors(ctx context.Context, userId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetAdminUsersUserIdFactorsRequest(c.Server, userId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) DeleteAdminUsersUserIdFactorsFactorId(ctx context.Context, userId openapi_types.UUID, factorId openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteAdminUsersUserIdFactorsFactorIdRequest(c.Server, userId, factorId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PutAdminUsersUserIdFactorsFactorIdWithBody(ctx context.Context, userId openapi_types.UUID, factorId openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPutAdminUsersUserIdFactorsFactorIdRequestWithBody(c.Server, userId, factorId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PutAdminUsersUserIdFactorsFactorId(ctx context.Context, userId openapi_types.UUID, factorId openapi_types.UUID, body PutAdminUsersUserIdFactorsFactorIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPutAdminUsersUserIdFactorsFactorIdRequest(c.Server, userId, factorId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PostInviteWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostInviteRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) PostInvite(ctx context.Context, body PostInviteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostInviteRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewGetAdminAuditRequest generates requests for GetAdminAudit
 func NewGetAdminAuditRequest(server string, params *GetAdminAuditParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/audit")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Page != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.PerPage != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPostAdminGenerateLinkRequest calls the generic PostAdminGenerateLink builder with application/json body
 func NewPostAdminGenerateLinkRequest(server string, body PostAdminGenerateLinkJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewPostAdminGenerateLinkRequestWithBody(server, "application/json", bodyReader)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPostAdminGenerateLinkRequestWithBody generates requests for PostAdminGenerateLink with any type of body
 func NewPostAdminGenerateLinkRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/generate_link")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewGetAdminSsoProvidersRequest generates requests for GetAdminSsoProviders
 func NewGetAdminSsoProvidersRequest(server string) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/sso/providers")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPostAdminSsoProvidersRequest calls the generic PostAdminSsoProviders builder with application/json body
 func NewPostAdminSsoProvidersRequest(server string, body PostAdminSsoProvidersJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewPostAdminSsoProvidersRequestWithBody(server, "application/json", bodyReader)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPostAdminSsoProvidersRequestWithBody generates requests for PostAdminSsoProviders with any type of body
 func NewPostAdminSsoProvidersRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/sso/providers")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewDeleteAdminSsoProvidersSsoProviderIdRequest generates requests for DeleteAdminSsoProvidersSsoProviderId
 func NewDeleteAdminSsoProvidersSsoProviderIdRequest(server string, ssoProviderId openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "ssoProviderId", runtime.ParamLocationPath, ssoProviderId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/sso/providers/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewGetAdminSsoProvidersSsoProviderIdRequest generates requests for GetAdminSsoProvidersSsoProviderId
 func NewGetAdminSsoProvidersSsoProviderIdRequest(server string, ssoProviderId openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "ssoProviderId", runtime.ParamLocationPath, ssoProviderId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/sso/providers/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPutAdminSsoProvidersSsoProviderIdRequest calls the generic PutAdminSsoProvidersSsoProviderId builder with application/json body
 func NewPutAdminSsoProvidersSsoProviderIdRequest(server string, ssoProviderId openapi_types.UUID, body PutAdminSsoProvidersSsoProviderIdJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewPutAdminSsoProvidersSsoProviderIdRequestWithBody(server, ssoProviderId, "application/json", bodyReader)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPutAdminSsoProvidersSsoProviderIdRequestWithBody generates requests for PutAdminSsoProvidersSsoProviderId with any type of body
 func NewPutAdminSsoProvidersSsoProviderIdRequestWithBody(server string, ssoProviderId openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "ssoProviderId", runtime.ParamLocationPath, ssoProviderId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/sso/providers/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewGetAdminUsersRequest generates requests for GetAdminUsers
 func NewGetAdminUsersRequest(server string, params *GetAdminUsersParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Page != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.PerPage != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewDeleteAdminUsersUserIdRequest generates requests for DeleteAdminUsersUserId
 func NewDeleteAdminUsersUserIdRequest(server string, userId openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewGetAdminUsersUserIdRequest generates requests for GetAdminUsersUserId
 func NewGetAdminUsersUserIdRequest(server string, userId openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPutAdminUsersUserIdRequest calls the generic PutAdminUsersUserId builder with application/json body
 func NewPutAdminUsersUserIdRequest(server string, userId openapi_types.UUID, body PutAdminUsersUserIdJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewPutAdminUsersUserIdRequestWithBody(server, userId, "application/json", bodyReader)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPutAdminUsersUserIdRequestWithBody generates requests for PutAdminUsersUserId with any type of body
 func NewPutAdminUsersUserIdRequestWithBody(server string, userId openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewGetAdminUsersUserIdFactorsRequest generates requests for GetAdminUsersUserIdFactors
 func NewGetAdminUsersUserIdFactorsRequest(server string, userId openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users/%s/factors", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewDeleteAdminUsersUserIdFactorsFactorIdRequest generates requests for DeleteAdminUsersUserIdFactorsFactorId
 func NewDeleteAdminUsersUserIdFactorsFactorIdRequest(server string, userId openapi_types.UUID, factorId openapi_types.UUID) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "factorId", runtime.ParamLocationPath, factorId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users/%s/factors/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPutAdminUsersUserIdFactorsFactorIdRequest calls the generic PutAdminUsersUserIdFactorsFactorId builder with application/json body
 func NewPutAdminUsersUserIdFactorsFactorIdRequest(server string, userId openapi_types.UUID, factorId openapi_types.UUID, body PutAdminUsersUserIdFactorsFactorIdJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewPutAdminUsersUserIdFactorsFactorIdRequestWithBody(server, userId, factorId, "application/json", bodyReader)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPutAdminUsersUserIdFactorsFactorIdRequestWithBody generates requests for PutAdminUsersUserIdFactorsFactorId with any type of body
 func NewPutAdminUsersUserIdFactorsFactorIdRequestWithBody(server string, userId openapi_types.UUID, factorId openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "userId", runtime.ParamLocationPath, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	var pathParam1 string
-
-	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "factorId", runtime.ParamLocationPath, factorId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/admin/users/%s/factors/%s", pathParam0, pathParam1)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PUT", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPostInviteRequest calls the generic PostInvite builder with application/json body
 func NewPostInviteRequest(server string, body PostInviteJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewPostInviteRequestWithBody(server, "application/json", bodyReader)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // NewPostInviteRequestWithBody generates requests for PostInvite with any type of body
 func NewPostInviteRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/invite")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
-	for _, r := range c.RequestEditors {
-		if err := r(ctx, req); err != nil {
-			return err
-		}
-	}
-	for _, r := range additionalEditors {
-		if err := r(ctx, req); err != nil {
-			return err
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -1288,24 +602,12 @@ type ClientWithResponses struct {
 // NewClientWithResponses creates a new ClientWithResponses, which wraps
 // Client with return type handling
 func NewClientWithResponses(server string, opts ...ClientOption) (*ClientWithResponses, error) {
-	client, err := NewClient(server, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &ClientWithResponses{client}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // WithBaseURL overrides the baseURL.
-func WithBaseURL(baseURL string) ClientOption {
-	return func(c *Client) error {
-		newBaseURL, err := url.Parse(baseURL)
-		if err != nil {
-			return err
-		}
-		c.Server = newBaseURL.String()
-		return nil
-	}
-}
+func WithBaseURL(baseURL string) ClientOption { _ = "STUB: not implemented"; return *new(ClientOption) }
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
@@ -1423,20 +725,10 @@ type GetAdminAuditResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetAdminAuditResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r GetAdminAuditResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetAdminAuditResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r GetAdminAuditResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type PostAdminGenerateLinkResponse struct {
 	Body         []byte
@@ -1457,20 +749,10 @@ type PostAdminGenerateLinkResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PostAdminGenerateLinkResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r PostAdminGenerateLinkResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PostAdminGenerateLinkResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r PostAdminGenerateLinkResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type GetAdminSsoProvidersResponse struct {
 	Body         []byte
@@ -1481,20 +763,10 @@ type GetAdminSsoProvidersResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetAdminSsoProvidersResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r GetAdminSsoProvidersResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetAdminSsoProvidersResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r GetAdminSsoProvidersResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type PostAdminSsoProvidersResponse struct {
 	Body         []byte
@@ -1506,20 +778,10 @@ type PostAdminSsoProvidersResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PostAdminSsoProvidersResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r PostAdminSsoProvidersResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PostAdminSsoProvidersResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r PostAdminSsoProvidersResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type DeleteAdminSsoProvidersSsoProviderIdResponse struct {
 	Body         []byte
@@ -1532,17 +794,13 @@ type DeleteAdminSsoProvidersSsoProviderIdResponse struct {
 
 // Status returns HTTPResponse.Status
 func (r DeleteAdminSsoProvidersSsoProviderIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DeleteAdminSsoProvidersSsoProviderIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
+	_ = "STUB: not implemented"
 	return 0
 }
 
@@ -1557,17 +815,13 @@ type GetAdminSsoProvidersSsoProviderIdResponse struct {
 
 // Status returns HTTPResponse.Status
 func (r GetAdminSsoProvidersSsoProviderIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetAdminSsoProvidersSsoProviderIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
+	_ = "STUB: not implemented"
 	return 0
 }
 
@@ -1583,17 +837,13 @@ type PutAdminSsoProvidersSsoProviderIdResponse struct {
 
 // Status returns HTTPResponse.Status
 func (r PutAdminSsoProvidersSsoProviderIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r PutAdminSsoProvidersSsoProviderIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
+	_ = "STUB: not implemented"
 	return 0
 }
 
@@ -1610,20 +860,10 @@ type GetAdminUsersResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetAdminUsersResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r GetAdminUsersResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetAdminUsersResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r GetAdminUsersResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type DeleteAdminUsersUserIdResponse struct {
 	Body         []byte
@@ -1635,20 +875,10 @@ type DeleteAdminUsersUserIdResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r DeleteAdminUsersUserIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r DeleteAdminUsersUserIdResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r DeleteAdminUsersUserIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r DeleteAdminUsersUserIdResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type GetAdminUsersUserIdResponse struct {
 	Body         []byte
@@ -1660,20 +890,10 @@ type GetAdminUsersUserIdResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetAdminUsersUserIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r GetAdminUsersUserIdResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetAdminUsersUserIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r GetAdminUsersUserIdResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type PutAdminUsersUserIdResponse struct {
 	Body         []byte
@@ -1685,20 +905,10 @@ type PutAdminUsersUserIdResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PutAdminUsersUserIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r PutAdminUsersUserIdResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PutAdminUsersUserIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r PutAdminUsersUserIdResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type GetAdminUsersUserIdFactorsResponse struct {
 	Body         []byte
@@ -1710,20 +920,10 @@ type GetAdminUsersUserIdFactorsResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetAdminUsersUserIdFactorsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r GetAdminUsersUserIdFactorsResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetAdminUsersUserIdFactorsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r GetAdminUsersUserIdFactorsResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 type DeleteAdminUsersUserIdFactorsFactorIdResponse struct {
 	Body         []byte
@@ -1736,17 +936,13 @@ type DeleteAdminUsersUserIdFactorsFactorIdResponse struct {
 
 // Status returns HTTPResponse.Status
 func (r DeleteAdminUsersUserIdFactorsFactorIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r DeleteAdminUsersUserIdFactorsFactorIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
+	_ = "STUB: not implemented"
 	return 0
 }
 
@@ -1761,17 +957,13 @@ type PutAdminUsersUserIdFactorsFactorIdResponse struct {
 
 // Status returns HTTPResponse.Status
 func (r PutAdminUsersUserIdFactorsFactorIdResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r PutAdminUsersUserIdFactorsFactorIdResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
+	_ = "STUB: not implemented"
 	return 0
 }
 
@@ -1784,944 +976,254 @@ type PostInviteResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PostInviteResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
+func (r PostInviteResponse) Status() string { _ = "STUB: not implemented"; return "" }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PostInviteResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
+func (r PostInviteResponse) StatusCode() int { _ = "STUB: not implemented"; return 0 }
 
 // GetAdminAuditWithResponse request returning *GetAdminAuditResponse
 func (c *ClientWithResponses) GetAdminAuditWithResponse(ctx context.Context, params *GetAdminAuditParams, reqEditors ...RequestEditorFn) (*GetAdminAuditResponse, error) {
-	rsp, err := c.GetAdminAudit(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetAdminAuditResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PostAdminGenerateLinkWithBodyWithResponse request with arbitrary body returning *PostAdminGenerateLinkResponse
 func (c *ClientWithResponses) PostAdminGenerateLinkWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAdminGenerateLinkResponse, error) {
-	rsp, err := c.PostAdminGenerateLinkWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePostAdminGenerateLinkResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *ClientWithResponses) PostAdminGenerateLinkWithResponse(ctx context.Context, body PostAdminGenerateLinkJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAdminGenerateLinkResponse, error) {
-	rsp, err := c.PostAdminGenerateLink(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePostAdminGenerateLinkResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetAdminSsoProvidersWithResponse request returning *GetAdminSsoProvidersResponse
 func (c *ClientWithResponses) GetAdminSsoProvidersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetAdminSsoProvidersResponse, error) {
-	rsp, err := c.GetAdminSsoProviders(ctx, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetAdminSsoProvidersResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PostAdminSsoProvidersWithBodyWithResponse request with arbitrary body returning *PostAdminSsoProvidersResponse
 func (c *ClientWithResponses) PostAdminSsoProvidersWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAdminSsoProvidersResponse, error) {
-	rsp, err := c.PostAdminSsoProvidersWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePostAdminSsoProvidersResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *ClientWithResponses) PostAdminSsoProvidersWithResponse(ctx context.Context, body PostAdminSsoProvidersJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAdminSsoProvidersResponse, error) {
-	rsp, err := c.PostAdminSsoProviders(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePostAdminSsoProvidersResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // DeleteAdminSsoProvidersSsoProviderIdWithResponse request returning *DeleteAdminSsoProvidersSsoProviderIdResponse
 func (c *ClientWithResponses) DeleteAdminSsoProvidersSsoProviderIdWithResponse(ctx context.Context, ssoProviderId openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeleteAdminSsoProvidersSsoProviderIdResponse, error) {
-	rsp, err := c.DeleteAdminSsoProvidersSsoProviderId(ctx, ssoProviderId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteAdminSsoProvidersSsoProviderIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetAdminSsoProvidersSsoProviderIdWithResponse request returning *GetAdminSsoProvidersSsoProviderIdResponse
 func (c *ClientWithResponses) GetAdminSsoProvidersSsoProviderIdWithResponse(ctx context.Context, ssoProviderId openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetAdminSsoProvidersSsoProviderIdResponse, error) {
-	rsp, err := c.GetAdminSsoProvidersSsoProviderId(ctx, ssoProviderId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetAdminSsoProvidersSsoProviderIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PutAdminSsoProvidersSsoProviderIdWithBodyWithResponse request with arbitrary body returning *PutAdminSsoProvidersSsoProviderIdResponse
 func (c *ClientWithResponses) PutAdminSsoProvidersSsoProviderIdWithBodyWithResponse(ctx context.Context, ssoProviderId openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAdminSsoProvidersSsoProviderIdResponse, error) {
-	rsp, err := c.PutAdminSsoProvidersSsoProviderIdWithBody(ctx, ssoProviderId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePutAdminSsoProvidersSsoProviderIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *ClientWithResponses) PutAdminSsoProvidersSsoProviderIdWithResponse(ctx context.Context, ssoProviderId openapi_types.UUID, body PutAdminSsoProvidersSsoProviderIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAdminSsoProvidersSsoProviderIdResponse, error) {
-	rsp, err := c.PutAdminSsoProvidersSsoProviderId(ctx, ssoProviderId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePutAdminSsoProvidersSsoProviderIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetAdminUsersWithResponse request returning *GetAdminUsersResponse
 func (c *ClientWithResponses) GetAdminUsersWithResponse(ctx context.Context, params *GetAdminUsersParams, reqEditors ...RequestEditorFn) (*GetAdminUsersResponse, error) {
-	rsp, err := c.GetAdminUsers(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetAdminUsersResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // DeleteAdminUsersUserIdWithResponse request returning *DeleteAdminUsersUserIdResponse
 func (c *ClientWithResponses) DeleteAdminUsersUserIdWithResponse(ctx context.Context, userId openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeleteAdminUsersUserIdResponse, error) {
-	rsp, err := c.DeleteAdminUsersUserId(ctx, userId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteAdminUsersUserIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetAdminUsersUserIdWithResponse request returning *GetAdminUsersUserIdResponse
 func (c *ClientWithResponses) GetAdminUsersUserIdWithResponse(ctx context.Context, userId openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetAdminUsersUserIdResponse, error) {
-	rsp, err := c.GetAdminUsersUserId(ctx, userId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetAdminUsersUserIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PutAdminUsersUserIdWithBodyWithResponse request with arbitrary body returning *PutAdminUsersUserIdResponse
 func (c *ClientWithResponses) PutAdminUsersUserIdWithBodyWithResponse(ctx context.Context, userId openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAdminUsersUserIdResponse, error) {
-	rsp, err := c.PutAdminUsersUserIdWithBody(ctx, userId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePutAdminUsersUserIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *ClientWithResponses) PutAdminUsersUserIdWithResponse(ctx context.Context, userId openapi_types.UUID, body PutAdminUsersUserIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAdminUsersUserIdResponse, error) {
-	rsp, err := c.PutAdminUsersUserId(ctx, userId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePutAdminUsersUserIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetAdminUsersUserIdFactorsWithResponse request returning *GetAdminUsersUserIdFactorsResponse
 func (c *ClientWithResponses) GetAdminUsersUserIdFactorsWithResponse(ctx context.Context, userId openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetAdminUsersUserIdFactorsResponse, error) {
-	rsp, err := c.GetAdminUsersUserIdFactors(ctx, userId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseGetAdminUsersUserIdFactorsResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // DeleteAdminUsersUserIdFactorsFactorIdWithResponse request returning *DeleteAdminUsersUserIdFactorsFactorIdResponse
 func (c *ClientWithResponses) DeleteAdminUsersUserIdFactorsFactorIdWithResponse(ctx context.Context, userId openapi_types.UUID, factorId openapi_types.UUID, reqEditors ...RequestEditorFn) (*DeleteAdminUsersUserIdFactorsFactorIdResponse, error) {
-	rsp, err := c.DeleteAdminUsersUserIdFactorsFactorId(ctx, userId, factorId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteAdminUsersUserIdFactorsFactorIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PutAdminUsersUserIdFactorsFactorIdWithBodyWithResponse request with arbitrary body returning *PutAdminUsersUserIdFactorsFactorIdResponse
 func (c *ClientWithResponses) PutAdminUsersUserIdFactorsFactorIdWithBodyWithResponse(ctx context.Context, userId openapi_types.UUID, factorId openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAdminUsersUserIdFactorsFactorIdResponse, error) {
-	rsp, err := c.PutAdminUsersUserIdFactorsFactorIdWithBody(ctx, userId, factorId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePutAdminUsersUserIdFactorsFactorIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *ClientWithResponses) PutAdminUsersUserIdFactorsFactorIdWithResponse(ctx context.Context, userId openapi_types.UUID, factorId openapi_types.UUID, body PutAdminUsersUserIdFactorsFactorIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAdminUsersUserIdFactorsFactorIdResponse, error) {
-	rsp, err := c.PutAdminUsersUserIdFactorsFactorId(ctx, userId, factorId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePutAdminUsersUserIdFactorsFactorIdResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PostInviteWithBodyWithResponse request with arbitrary body returning *PostInviteResponse
 func (c *ClientWithResponses) PostInviteWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostInviteResponse, error) {
-	rsp, err := c.PostInviteWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePostInviteResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *ClientWithResponses) PostInviteWithResponse(ctx context.Context, body PostInviteJSONRequestBody, reqEditors ...RequestEditorFn) (*PostInviteResponse, error) {
-	rsp, err := c.PostInvite(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParsePostInviteResponse(rsp)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseGetAdminAuditResponse parses an HTTP response from a GetAdminAuditWithResponse call
 func ParseGetAdminAuditResponse(rsp *http.Response) (*GetAdminAuditResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetAdminAuditResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []struct {
-			CreatedAt *time.Time          `json:"created_at,omitempty"`
-			Id        *openapi_types.UUID `json:"id,omitempty"`
-			IpAddress *string             `json:"ip_address,omitempty"`
-			Payload   *struct {
-				// Action Usually one of these values:
-				// - login
-				// - logout
-				// - invite_accepted
-				// - user_signedup
-				// - user_invited
-				// - user_deleted
-				// - user_modified
-				// - user_recovery_requested
-				// - user_reauthenticate_requested
-				// - user_confirmation_requested
-				// - user_repeated_signup
-				// - user_updated_password
-				// - token_revoked
-				// - token_refreshed
-				// - generate_recovery_codes
-				// - factor_in_progress
-				// - factor_unenrolled
-				// - challenge_created
-				// - verification_attempted
-				// - factor_deleted
-				// - recovery_codes_deleted
-				// - factor_updated
-				// - mfa_code_login
-				Action        *string `json:"action,omitempty"`
-				ActorId       *string `json:"actor_id,omitempty"`
-				ActorName     *string `json:"actor_name,omitempty"`
-				ActorUsername *string `json:"actor_username,omitempty"`
-
-				// ActorViaSso Whether the actor used a SSO protocol (like SAML 2.0 or OIDC) to authenticate.
-				ActorViaSso *bool `json:"actor_via_sso,omitempty"`
-
-				// LogType Usually one of these values:
-				// - account
-				// - team
-				// - token
-				// - user
-				// - factor
-				// - recovery_codes
-				LogType *string                 `json:"log_type,omitempty"`
-				Traits  *map[string]interface{} `json:"traits,omitempty"`
-			} `json:"payload,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Action Usually one of these values:
+// - login
+// - logout
+// - invite_accepted
+// - user_signedup
+// - user_invited
+// - user_deleted
+// - user_modified
+// - user_recovery_requested
+// - user_reauthenticate_requested
+// - user_confirmation_requested
+// - user_repeated_signup
+// - user_updated_password
+// - token_revoked
+// - token_refreshed
+// - generate_recovery_codes
+// - factor_in_progress
+// - factor_unenrolled
+// - challenge_created
+// - verification_attempted
+// - factor_deleted
+// - recovery_codes_deleted
+// - factor_updated
+// - mfa_code_login
+
+// ActorViaSso Whether the actor used a SSO protocol (like SAML 2.0 or OIDC) to authenticate.
+
+// LogType Usually one of these values:
+// - account
+// - team
+// - token
+// - user
+// - factor
+// - recovery_codes
 
 // ParsePostAdminGenerateLinkResponse parses an HTTP response from a PostAdminGenerateLinkWithResponse call
 func ParsePostAdminGenerateLinkResponse(rsp *http.Response) (*PostAdminGenerateLinkResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PostAdminGenerateLinkResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			ActionLink           *string                `json:"action_link,omitempty"`
-			EmailOtp             *string                `json:"email_otp,omitempty"`
-			HashedToken          *string                `json:"hashed_token,omitempty"`
-			RedirectTo           *string                `json:"redirect_to,omitempty"`
-			VerificationType     *string                `json:"verification_type,omitempty"`
-			AdditionalProperties map[string]interface{} `json:"-"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequestResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseGetAdminSsoProvidersResponse parses an HTTP response from a GetAdminSsoProvidersWithResponse call
 func ParseGetAdminSsoProvidersResponse(rsp *http.Response) (*GetAdminSsoProvidersResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetAdminSsoProvidersResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			Items *[]SSOProviderSchema `json:"items,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParsePostAdminSsoProvidersResponse parses an HTTP response from a PostAdminSsoProvidersWithResponse call
 func ParsePostAdminSsoProvidersResponse(rsp *http.Response) (*PostAdminSsoProvidersResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PostAdminSsoProvidersResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SSOProviderSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequestResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseDeleteAdminSsoProvidersSsoProviderIdResponse parses an HTTP response from a DeleteAdminSsoProvidersSsoProviderIdWithResponse call
 func ParseDeleteAdminSsoProvidersSsoProviderIdResponse(rsp *http.Response) (*DeleteAdminSsoProvidersSsoProviderIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteAdminSsoProvidersSsoProviderIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SSOProviderSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseGetAdminSsoProvidersSsoProviderIdResponse parses an HTTP response from a GetAdminSsoProvidersSsoProviderIdWithResponse call
 func ParseGetAdminSsoProvidersSsoProviderIdResponse(rsp *http.Response) (*GetAdminSsoProvidersSsoProviderIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetAdminSsoProvidersSsoProviderIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SSOProviderSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParsePutAdminSsoProvidersSsoProviderIdResponse parses an HTTP response from a PutAdminSsoProvidersSsoProviderIdWithResponse call
 func ParsePutAdminSsoProvidersSsoProviderIdResponse(rsp *http.Response) (*PutAdminSsoProvidersSsoProviderIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PutAdminSsoProvidersSsoProviderIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest SSOProviderSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequestResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseGetAdminUsersResponse parses an HTTP response from a GetAdminUsersWithResponse call
 func ParseGetAdminUsersResponse(rsp *http.Response) (*GetAdminUsersResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetAdminUsersResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest struct {
-			// Deprecated:
-			Aud   *string       `json:"aud,omitempty"`
-			Users *[]UserSchema `json:"users,omitempty"`
-		}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Deprecated:
 
 // ParseDeleteAdminUsersUserIdResponse parses an HTTP response from a DeleteAdminUsersUserIdWithResponse call
 func ParseDeleteAdminUsersUserIdResponse(rsp *http.Response) (*DeleteAdminUsersUserIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteAdminUsersUserIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest UserSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseGetAdminUsersUserIdResponse parses an HTTP response from a GetAdminUsersUserIdWithResponse call
 func ParseGetAdminUsersUserIdResponse(rsp *http.Response) (*GetAdminUsersUserIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetAdminUsersUserIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest UserSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParsePutAdminUsersUserIdResponse parses an HTTP response from a PutAdminUsersUserIdWithResponse call
 func ParsePutAdminUsersUserIdResponse(rsp *http.Response) (*PutAdminUsersUserIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PutAdminUsersUserIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest UserSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseGetAdminUsersUserIdFactorsResponse parses an HTTP response from a GetAdminUsersUserIdFactorsWithResponse call
 func ParseGetAdminUsersUserIdFactorsResponse(rsp *http.Response) (*GetAdminUsersUserIdFactorsResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &GetAdminUsersUserIdFactorsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []MFAFactorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParseDeleteAdminUsersUserIdFactorsFactorIdResponse parses an HTTP response from a DeleteAdminUsersUserIdFactorsFactorIdWithResponse call
 func ParseDeleteAdminUsersUserIdFactorsFactorIdResponse(rsp *http.Response) (*DeleteAdminUsersUserIdFactorsFactorIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteAdminUsersUserIdFactorsFactorIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest MFAFactorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParsePutAdminUsersUserIdFactorsFactorIdResponse parses an HTTP response from a PutAdminUsersUserIdFactorsFactorIdWithResponse call
 func ParsePutAdminUsersUserIdFactorsFactorIdResponse(rsp *http.Response) (*PutAdminUsersUserIdFactorsFactorIdResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PutAdminUsersUserIdFactorsFactorIdResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest MFAFactorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest UnauthorizedResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest ForbiddenResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ParsePostInviteResponse parses an HTTP response from a PostInviteWithResponse call
 func ParsePostInviteResponse(rsp *http.Response) (*PostInviteResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &PostInviteResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest UserSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
-		var dest BadRequestResponse
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON400 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest ErrorSchema
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	}
-
-	return response, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

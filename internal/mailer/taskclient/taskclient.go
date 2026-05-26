@@ -4,9 +4,7 @@ package taskclient
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/supabase/auth/internal/api/apitask"
 	"github.com/supabase/auth/internal/conf"
 	"github.com/supabase/auth/internal/mailer"
 )
@@ -15,12 +13,10 @@ import (
 // call the given Client. If the mailer config EmailBackgroundSending is
 // disabled it will return the same Client passed in mc.
 func New(globalConfig *conf.GlobalConfiguration, mc mailer.Client) mailer.Client {
+	_ = "STUB: not implemented"
 
 	// Check if background emails are enabled
-	if globalConfig.Mailer.EmailBackgroundSending {
-		mc = &backgroundMailClient{mc: mc}
-	}
-	return mc
+	return *new(mailer.Client)
 }
 
 // Task holds a mail pending delivery by the Handler.
@@ -36,19 +32,11 @@ type Task struct {
 
 // Run implements the Type method of the apitask.Task interface by returning
 // the "mailer." prefix followed by the mail type.
-func (o *Task) Type() string { return fmt.Sprintf("mailer.%v", o.Typ) }
+func (o *Task) Type() string { _ = "STUB: not implemented"; return "" }
 
 // Run implements the Run method of the apitask.Task interface by attempting
 // to send the mail using the underying mail client.
-func (o *Task) Run(ctx context.Context) error {
-	return o.mc.Mail(
-		ctx,
-		o.To,
-		o.Subject,
-		o.Body,
-		o.Headers,
-		o.Typ)
-}
+func (o *Task) Run(ctx context.Context) error { _ = "STUB: not implemented"; return nil }
 
 type backgroundMailClient struct {
 	mc mailer.Client
@@ -64,13 +52,6 @@ func (o *backgroundMailClient) Mail(
 	headers map[string][]string,
 	typ string,
 ) error {
-	tk := &Task{
-		mc:      o.mc,
-		To:      to,
-		Subject: subject,
-		Body:    body,
-		Headers: headers,
-		Typ:     typ,
-	}
-	return apitask.Run(ctx, tk)
+	_ = "STUB: not implemented"
+	return nil
 }

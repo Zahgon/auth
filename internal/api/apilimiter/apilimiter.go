@@ -5,7 +5,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/didip/tollbooth/v5"
 	"github.com/didip/tollbooth/v5/limiter"
 	"github.com/sirupsen/logrus"
 	"github.com/supabase/auth/internal/conf"
@@ -181,196 +180,34 @@ type Limiter struct {
 	Web3 *limiter.Limiter
 }
 
-func New(gc *conf.GlobalConfiguration) *Limiter {
-	o := &Limiter{
-		cfg: gc,
-	}
+func New(gc *conf.GlobalConfiguration) *Limiter { _ = "STUB: not implemented"; return nil }
 
-	o.Email = ratelimit.New(gc.RateLimitEmailSent)
-	o.Phone = ratelimit.New(gc.RateLimitSmsSent)
+// These all use the OTP limit per 5 min with 1hour ttl and burst of 30.
 
-	o.AnonymousSignIns = tollbooth.NewLimiter(gc.RateLimitAnonymousUsers/(60*60),
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Hour,
-		}).SetBurst(int(gc.RateLimitAnonymousUsers)).SetMethods([]string{"POST"})
-
-	o.Token = tollbooth.NewLimiter(gc.RateLimitTokenRefresh/(60*5),
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Hour,
-		}).SetBurst(30)
-
-	o.Verify = tollbooth.NewLimiter(gc.RateLimitVerify/(60*5),
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Hour,
-		}).SetBurst(30)
-
-	o.FactorVerify = tollbooth.NewLimiter(gc.MFA.RateLimitChallengeAndVerify/60,
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Minute,
-		}).SetBurst(30)
-
-	o.FactorChallenge = tollbooth.NewLimiter(gc.MFA.RateLimitChallengeAndVerify/60,
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Minute,
-		}).SetBurst(30)
-
-	o.SSO = tollbooth.NewLimiter(gc.RateLimitSso/(60*5),
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Hour,
-		}).SetBurst(30)
-
-	o.SAMLAssertion = tollbooth.NewLimiter(gc.SAML.RateLimitAssertion/(60*5),
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Hour,
-		}).SetBurst(30)
-
-	o.Web3 = tollbooth.NewLimiter(gc.RateLimitWeb3/(60*5),
-		&limiter.ExpirableOptions{
-			DefaultExpirationTTL: time.Hour,
-		}).SetBurst(30)
-
-	// These all use the OTP limit per 5 min with 1hour ttl and burst of 30.
-	o.Recover = newLimiterPer5mOver1h(gc.RateLimitOtp)
-	o.Resend = newLimiterPer5mOver1h(gc.RateLimitOtp)
-	o.MagicLink = newLimiterPer5mOver1h(gc.RateLimitOtp)
-	o.Otp = newLimiterPer5mOver1h(gc.RateLimitOtp)
-	o.User = newLimiterPer5mOver1h(gc.RateLimitOtp)
-	o.Signups = newLimiterPer5mOver1h(gc.RateLimitOtp)
-	o.OAuthClientRegister = newLimiterPer5mOver1h(gc.RateLimitOAuthDynamicClientRegister)
-	o.PasskeyAuthentication = newLimiterPer5mOver1h(gc.RateLimitPasskey)
-	return o
-}
-
-func (o *Limiter) Copy() *Limiter {
-	return &Limiter{
-		cfg: o.cfg,
-
-		Email: o.Email,
-		Phone: o.Phone,
-
-		AnonymousSignIns:      o.AnonymousSignIns,
-		FactorChallenge:       o.FactorChallenge,
-		FactorVerify:          o.FactorVerify,
-		MagicLink:             o.MagicLink,
-		OAuthClientRegister:   o.OAuthClientRegister,
-		Otp:                   o.Otp,
-		PasskeyAuthentication: o.PasskeyAuthentication,
-		Recover:               o.Recover,
-		Resend:                o.Resend,
-		SAMLAssertion:         o.SAMLAssertion,
-		Signups:               o.Signups,
-		SSO:                   o.SSO,
-		Token:                 o.Token,
-		User:                  o.User,
-		Verify:                o.Verify,
-		Web3:                  o.Web3,
-	}
-}
+func (o *Limiter) Copy() *Limiter { _ = "STUB: not implemented"; return nil }
 
 func (o *Limiter) Update(
 	le *logrus.Entry,
 	nextCfg *conf.GlobalConfiguration,
 ) *Limiter {
-	prevCfg := o.cfg
-
-	v := o.Copy()
-	v.cfg = nextCfg
-
-	if !ratelimit.Equal(v.Email, nextCfg.RateLimitEmailSent) {
-		v.Email = ratelimit.New(nextCfg.RateLimitEmailSent)
-		logEnvUpdates(le, envRateLimitEmailSent,
-			o.Email.Config().GetRateValue(),
-			v.Email.Config().GetRateValue())
-	}
-
-	if !ratelimit.Equal(v.Phone, nextCfg.RateLimitSmsSent) {
-		v.Phone = ratelimit.New(nextCfg.RateLimitSmsSent)
-		logEnvUpdates(le, envRateLimitSmsSent,
-			o.Phone.Config().GetRateValue(),
-			v.Phone.Config().GetRateValue())
-	}
-
-	if a, b := prevCfg.RateLimitAnonymousUsers, nextCfg.RateLimitAnonymousUsers; a != b {
-		v.AnonymousSignIns = newTollbooth(
-			b/(60*60), int(b), time.Hour).SetMethods([]string{"POST"})
-		logEnvUpdates(le, envRateLimitAnonymousUsers, a, b)
-	}
-
-	if a, b := prevCfg.MFA.RateLimitChallengeAndVerify, nextCfg.MFA.RateLimitChallengeAndVerify; a != b {
-		v.FactorChallenge = newTollbooth(b/60, 30, time.Minute)
-		v.FactorVerify = newTollbooth(b/60, 30, time.Minute)
-		logEnvUpdates(le, envMFARateLimitChallengeAndVerify, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitOtp, nextCfg.RateLimitOtp; a != b {
-		v.MagicLink = newLimiterPer5mOver1h(b)
-		v.Otp = newLimiterPer5mOver1h(b)
-		v.Recover = newLimiterPer5mOver1h(b)
-		v.Resend = newLimiterPer5mOver1h(b)
-		v.Signups = newLimiterPer5mOver1h(b)
-		v.User = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitOtp, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitOAuthDynamicClientRegister, nextCfg.RateLimitOAuthDynamicClientRegister; a != b {
-		v.OAuthClientRegister = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitOAuthDynamicClientRegister, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitPasskey, nextCfg.RateLimitPasskey; a != b {
-		v.PasskeyAuthentication = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitPasskey, a, b)
-	}
-
-	if a, b := prevCfg.SAML.RateLimitAssertion, nextCfg.SAML.RateLimitAssertion; a != b {
-		v.SAMLAssertion = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envSAMLRateLimitAssertion, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitSso, nextCfg.RateLimitSso; a != b {
-		v.SSO = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitSso, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitTokenRefresh, nextCfg.RateLimitTokenRefresh; a != b {
-		v.Token = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitTokenRefresh, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitVerify, nextCfg.RateLimitVerify; a != b {
-		v.Verify = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitVerify, a, b)
-	}
-
-	if a, b := prevCfg.RateLimitWeb3, nextCfg.RateLimitWeb3; a != b {
-		v.Web3 = newLimiterPer5mOver1h(b)
-		logEnvUpdates(le, envRateLimitWeb3, a, b)
-	}
-	return v
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func newTollbooth(freq float64, burst int, ttl time.Duration) *limiter.Limiter {
-	return tollbooth.NewLimiter(freq, &limiter.ExpirableOptions{
-		DefaultExpirationTTL: ttl,
-	}).SetBurst(burst)
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func newLimiterPer5mOver1h(rate float64) *limiter.Limiter {
-	freq := rate / (60 * 5)
-	lim := tollbooth.NewLimiter(freq, &limiter.ExpirableOptions{
-		DefaultExpirationTTL: time.Hour,
-	}).SetBurst(30)
-	return lim
-}
+func newLimiterPer5mOver1h(rate float64) *limiter.Limiter { _ = "STUB: not implemented"; return nil }
 
 func logEnvUpdates(
 	le *logrus.Entry,
 	env string,
 	prevVal, nextVal any,
 ) {
-	for _, field := range envsToFields[env] {
-		logUpdate(le, field, prevVal, nextVal)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func logUpdate(
@@ -378,14 +215,6 @@ func logUpdate(
 	field string,
 	prevVal, nextVal any,
 ) {
-	envName := fieldsToEnv[field]
-	lf := logrus.Fields{
-		"rate_limit_field": field,
-		"rate_limit_env":   envName,
-		"rate_limit_old":   prevVal,
-		"rate_limit_new":   nextVal,
-	}
-	le.WithFields(lf).Infof(
-		"env %v changed, updating %v limiter from %v to %v",
-		envName, field, prevVal, nextVal)
+	_ = "STUB: not implemented"
+	return
 }

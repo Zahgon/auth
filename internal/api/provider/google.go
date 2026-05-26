@@ -2,10 +2,8 @@ package provider
 
 import (
 	"context"
-	"strings"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sirupsen/logrus"
 	"github.com/supabase/auth/internal/conf"
 	"golang.org/x/oauth2"
 )
@@ -22,9 +20,7 @@ type googleUser struct {
 	HostedDomain  string `json:"hd"`
 }
 
-func (u googleUser) IsEmailVerified() bool {
-	return u.VerifiedEmail || u.EmailVerified
-}
+func (u googleUser) IsEmailVerified() bool { _ = "STUB: not implemented"; return false }
 
 const IssuerGoogle = "https://accounts.google.com"
 
@@ -38,111 +34,34 @@ type googleProvider struct {
 
 // NewGoogleProvider creates a Google OAuth2 identity provider.
 func NewGoogleProvider(ctx context.Context, ext conf.OAuthProviderConfiguration, scopes string, cache *OIDCProviderCache) (OAuthProvider, error) {
-	if err := ext.ValidateOAuth(); err != nil {
-		return nil, err
-	}
-
-	if ext.URL != "" {
-		logrus.Warn("Google OAuth provider has URL config set which is ignored (check GOTRUE_EXTERNAL_GOOGLE_URL)")
-	}
-
-	oauthScopes := []string{
-		"email",
-		"profile",
-	}
-
-	if scopes != "" {
-		oauthScopes = append(oauthScopes, strings.Split(scopes, ",")...)
-	}
-
-	oidcProvider, err := cache.GetProvider(ctx, internalIssuerGoogle)
-	if err != nil {
-		return nil, err
-	}
-
-	return &googleProvider{
-		Config: &oauth2.Config{
-			ClientID:     ext.ClientID[0],
-			ClientSecret: ext.Secret,
-			Endpoint:     oidcProvider.Endpoint(),
-			Scopes:       oauthScopes,
-			RedirectURL:  ext.RedirectURI,
-		},
-		oidc: oidcProvider,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(OAuthProvider), nil
 }
 
 func (g googleProvider) GetOAuthToken(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
-	return g.Exchange(ctx, code, opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (g googleProvider) RequiresPKCE() bool {
-	return false
-}
+func (g googleProvider) RequiresPKCE() bool { _ = "STUB: not implemented"; return false }
 
 const UserInfoEndpointGoogle = "https://www.googleapis.com/userinfo/v2/me"
 
 var internalUserInfoEndpointGoogle = UserInfoEndpointGoogle
 
 func (g googleProvider) GetUserData(ctx context.Context, tok *oauth2.Token) (*UserProvidedData, error) {
-	if idToken := tok.Extra("id_token"); idToken != nil {
-		_, data, err := ParseIDToken(ctx, g.oidc, &oidc.Config{
-			ClientID: g.Config.ClientID,
-		}, idToken.(string), ParseIDTokenOptions{
-			AccessToken: tok.AccessToken,
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return data, nil
-	}
-
-	// This whole section offers legacy support in case the Google OAuth2
-	// flow does not return an ID Token for the user, which appears to
-	// always be the case.
-	logrus.Info("Using Google OAuth2 user info endpoint, an ID token was not returned by Google")
-
-	var u googleUser
-	if err := makeRequest(ctx, tok, g.Config, internalUserInfoEndpointGoogle, &u); err != nil {
-		return nil, err
-	}
-
-	var data UserProvidedData
-
-	if u.Email != "" {
-		data.Emails = append(data.Emails, Email{
-			Email:    u.Email,
-			Verified: u.IsEmailVerified(),
-			Primary:  true,
-		})
-	}
-
-	data.Metadata = &Claims{
-		Issuer:        internalUserInfoEndpointGoogle,
-		Subject:       u.ID,
-		Name:          u.Name,
-		Picture:       u.AvatarURL,
-		Email:         u.Email,
-		EmailVerified: u.IsEmailVerified(),
-
-		// To be deprecated
-		AvatarURL:  u.AvatarURL,
-		FullName:   u.Name,
-		ProviderId: u.ID,
-	}
-
-	return &data, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// This whole section offers legacy support in case the Google OAuth2
+// flow does not return an ID Token for the user, which appears to
+// always be the case.
+
+// To be deprecated
 
 // ResetGoogleProvider should only be used in tests!
-func ResetGoogleProvider() {
-	internalIssuerGoogle = IssuerGoogle
-	internalUserInfoEndpointGoogle = UserInfoEndpointGoogle
-}
+func ResetGoogleProvider() { _ = "STUB: not implemented"; return }
 
 // OverrideGoogleProvider should only be used in tests!
-func OverrideGoogleProvider(issuer, userInfo string) {
-	internalIssuerGoogle = issuer
-	internalUserInfoEndpointGoogle = userInfo
-}
+func OverrideGoogleProvider(issuer, userInfo string) { _ = "STUB: not implemented"; return }

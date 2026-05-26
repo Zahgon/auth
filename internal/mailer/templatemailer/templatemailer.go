@@ -1,11 +1,8 @@
 package templatemailer
 
 import (
-	"context"
-	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/supabase/auth/internal/conf"
 	"github.com/supabase/auth/internal/models"
@@ -161,327 +158,97 @@ var (
 )
 
 func (m *Mailer) Headers(cfg *conf.GlobalConfiguration, messageType string) map[string][]string {
-	originalHeaders := cfg.SMTP.NormalizedHeaders()
-
-	if originalHeaders == nil {
-		return nil
-	}
-
-	headers := make(map[string][]string, len(originalHeaders))
-
-	for header, values := range originalHeaders {
-		replacedValues := make([]string, 0, len(values))
-
-		if header == "" {
-			continue
-		}
-
-		for _, value := range values {
-			if value == "" {
-				continue
-			}
-
-			// TODO: in the future, use a templating engine to add more contextual data available to headers
-			if strings.Contains(value, "$messageType") {
-				replacedValues = append(replacedValues, strings.ReplaceAll(value, "$messageType", messageType))
-			} else {
-				replacedValues = append(replacedValues, value)
-			}
-		}
-
-		headers[header] = replacedValues
-	}
-
-	return headers
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// TODO: in the future, use a templating engine to add more contextual data available to headers
 
 // InviteMail sends a invite mail to a new user
 func (m *Mailer) InviteMail(r *http.Request, user *models.User, otp, referrerURL string, externalURL *url.URL) error {
-	path, err := getPath(m.cfg.Mailer.URLPaths.Invite, &emailParams{
-		Token:      user.ConfirmationToken,
-		Type:       "invite",
-		RedirectTo: referrerURL,
-	})
-
-	if err != nil {
-		return err
-	}
-
-	data := map[string]any{
-		"SiteURL":         m.cfg.SiteURL,
-		"ConfirmationURL": externalURL.ResolveReference(path).String(),
-		"Email":           user.Email,
-		"Token":           otp,
-		"TokenHash":       user.ConfirmationToken,
-		"Data":            user.UserMetaData,
-		"RedirectTo":      referrerURL,
-	}
-	return m.mail(r.Context(), m.cfg, InviteTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ConfirmationMail sends a signup confirmation mail to a new user
 func (m *Mailer) ConfirmationMail(r *http.Request, user *models.User, otp, referrerURL string, externalURL *url.URL) error {
-	path, err := getPath(m.cfg.Mailer.URLPaths.Confirmation, &emailParams{
-		Token:      user.ConfirmationToken,
-		Type:       "signup",
-		RedirectTo: referrerURL,
-	})
-	if err != nil {
-		return err
-	}
-
-	data := map[string]any{
-		"SiteURL":         m.cfg.SiteURL,
-		"ConfirmationURL": externalURL.ResolveReference(path).String(),
-		"Email":           user.Email,
-		"Token":           otp,
-		"TokenHash":       user.ConfirmationToken,
-		"Data":            user.UserMetaData,
-		"RedirectTo":      referrerURL,
-	}
-	return m.mail(r.Context(), m.cfg, ConfirmationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ReauthenticateMail sends a reauthentication mail to an authenticated user
 func (m *Mailer) ReauthenticateMail(r *http.Request, user *models.User, otp string) error {
-	data := map[string]any{
-		"SiteURL": m.cfg.SiteURL,
-		"Email":   user.Email,
-		"Token":   otp,
-		"Data":    user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, ReauthenticationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // EmailChangeMail sends an email change confirmation mail to a user
 func (m *Mailer) EmailChangeMail(r *http.Request, user *models.User, otpNew, otpCurrent, referrerURL string, externalURL *url.URL) error {
-	type Email struct {
-		Action    string
-		Address   string
-		Otp       string
-		TokenHash string
-	}
-	emails := []Email{
-		{
-			Address:   user.EmailChange,
-			Otp:       otpNew,
-			TokenHash: user.EmailChangeTokenNew,
-		},
-	}
-
-	currentEmail := user.GetEmail()
-	if m.cfg.Mailer.SecureEmailChangeEnabled && currentEmail != "" {
-		emails = append(emails, Email{
-			Address:   currentEmail,
-			Otp:       otpCurrent,
-			TokenHash: user.EmailChangeTokenCurrent,
-		})
-	}
-
-	ctx, cancel := context.WithCancel(r.Context())
-	defer cancel()
-
-	errors := make(chan error, len(emails))
-	for _, email := range emails {
-		path, err := getPath(
-			m.cfg.Mailer.URLPaths.EmailChange,
-			&emailParams{
-				Token:      email.TokenHash,
-				Type:       "email_change",
-				RedirectTo: referrerURL,
-			},
-		)
-		if err != nil {
-			return err
-		}
-		go func(address, token, tokenHash string) {
-			data := map[string]any{
-				"SiteURL":         m.cfg.SiteURL,
-				"ConfirmationURL": externalURL.ResolveReference(path).String(),
-				"Email":           user.GetEmail(),
-				"NewEmail":        user.EmailChange,
-				"Token":           token,
-				"TokenHash":       tokenHash,
-				"SendingTo":       address,
-				"Data":            user.UserMetaData,
-				"RedirectTo":      referrerURL,
-			}
-			errors <- m.mail(
-				ctx,
-				m.cfg,
-				EmailChangeTemplate,
-				address,
-				data,
-			)
-		}(email.Address, email.Otp, email.TokenHash)
-	}
-
-	for i := 0; i < len(emails); i++ {
-		e := <-errors
-		if e != nil {
-			return e
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // RecoveryMail sends a password recovery mail
 func (m *Mailer) RecoveryMail(r *http.Request, user *models.User, otp, referrerURL string, externalURL *url.URL) error {
-	path, err := getPath(m.cfg.Mailer.URLPaths.Recovery, &emailParams{
-		Token:      user.RecoveryToken,
-		Type:       "recovery",
-		RedirectTo: referrerURL,
-	})
-	if err != nil {
-		return err
-	}
-	data := map[string]any{
-		"SiteURL":         m.cfg.SiteURL,
-		"ConfirmationURL": externalURL.ResolveReference(path).String(),
-		"Email":           user.Email,
-		"Token":           otp,
-		"TokenHash":       user.RecoveryToken,
-		"Data":            user.UserMetaData,
-		"RedirectTo":      referrerURL,
-	}
-	return m.mail(r.Context(), m.cfg, RecoveryTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // MagicLinkMail sends a login link mail
 func (m *Mailer) MagicLinkMail(r *http.Request, user *models.User, otp, referrerURL string, externalURL *url.URL) error {
-	path, err := getPath(m.cfg.Mailer.URLPaths.Recovery, &emailParams{
-		Token:      user.RecoveryToken,
-		Type:       "magiclink",
-		RedirectTo: referrerURL,
-	})
-	if err != nil {
-		return err
-	}
-
-	data := map[string]any{
-		"SiteURL":         m.cfg.SiteURL,
-		"ConfirmationURL": externalURL.ResolveReference(path).String(),
-		"Email":           user.Email,
-		"Token":           otp,
-		"TokenHash":       user.RecoveryToken,
-		"Data":            user.UserMetaData,
-		"RedirectTo":      referrerURL,
-	}
-	return m.mail(r.Context(), m.cfg, MagicLinkTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // GetEmailActionLink returns a magiclink, recovery or invite link based on the actionType passed.
 func (m *Mailer) GetEmailActionLink(user *models.User, actionType, referrerURL string, externalURL *url.URL) (string, error) {
-	var err error
-	var path *url.URL
-
-	switch actionType {
-	case "magiclink":
-		path, err = getPath(m.cfg.Mailer.URLPaths.Recovery, &emailParams{
-			Token:      user.RecoveryToken,
-			Type:       "magiclink",
-			RedirectTo: referrerURL,
-		})
-	case "recovery":
-		path, err = getPath(m.cfg.Mailer.URLPaths.Recovery, &emailParams{
-			Token:      user.RecoveryToken,
-			Type:       "recovery",
-			RedirectTo: referrerURL,
-		})
-	case "invite":
-		path, err = getPath(m.cfg.Mailer.URLPaths.Invite, &emailParams{
-			Token:      user.ConfirmationToken,
-			Type:       "invite",
-			RedirectTo: referrerURL,
-		})
-	case "signup":
-		path, err = getPath(m.cfg.Mailer.URLPaths.Confirmation, &emailParams{
-			Token:      user.ConfirmationToken,
-			Type:       "signup",
-			RedirectTo: referrerURL,
-		})
-	case "email_change_current":
-		path, err = getPath(m.cfg.Mailer.URLPaths.EmailChange, &emailParams{
-			Token:      user.EmailChangeTokenCurrent,
-			Type:       "email_change",
-			RedirectTo: referrerURL,
-		})
-	case "email_change_new":
-		path, err = getPath(m.cfg.Mailer.URLPaths.EmailChange, &emailParams{
-			Token:      user.EmailChangeTokenNew,
-			Type:       "email_change",
-			RedirectTo: referrerURL,
-		})
-	default:
-		return "", fmt.Errorf("invalid email action link type: %s", actionType)
-	}
-	if err != nil {
-		return "", err
-	}
-	return externalURL.ResolveReference(path).String(), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 func (m *Mailer) PasswordChangedNotificationMail(r *http.Request, user *models.User) error {
-	data := map[string]any{
-		"Email": user.Email,
-		"Data":  user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, PasswordChangedNotificationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (m *Mailer) EmailChangedNotificationMail(r *http.Request, user *models.User, oldEmail string) error {
-	data := map[string]any{
-		"Email":    user.GetEmail(), // the new email address that has been set on the account
-		"OldEmail": oldEmail,        // the old email address that was on the account before the change
-		"Data":     user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, EmailChangedNotificationTemplate, oldEmail, data)
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// the new email address that has been set on the account
+// the old email address that was on the account before the change
 
 func (m *Mailer) PhoneChangedNotificationMail(r *http.Request, user *models.User, oldPhone string) error {
-	data := map[string]any{
-		"Email":    user.GetEmail(),
-		"Phone":    user.GetPhone(), // the new phone number that has been set on the account
-		"OldPhone": oldPhone,        // the old phone number that was on the account before the change
-		"Data":     user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, PhoneChangedNotificationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// the new phone number that has been set on the account
+// the old phone number that was on the account before the change
 
 func (m *Mailer) IdentityLinkedNotificationMail(r *http.Request, user *models.User, provider string) error {
-	data := map[string]any{
-		"Email":    user.GetEmail(),
-		"Provider": provider, // the provider of the newly linked identity
-		"Data":     user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, IdentityLinkedNotificationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// the provider of the newly linked identity
 
 func (m *Mailer) IdentityUnlinkedNotificationMail(r *http.Request, user *models.User, provider string) error {
-	data := map[string]any{
-		"Email":    user.GetEmail(),
-		"Provider": provider, // the provider of the unlinked identity
-		"Data":     user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, IdentityUnlinkedNotificationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
+// the provider of the unlinked identity
+
 func (m *Mailer) MFAFactorEnrolledNotificationMail(r *http.Request, user *models.User, factorType string) error {
-	data := map[string]any{
-		"Email":      user.GetEmail(),
-		"FactorType": factorType,
-		"Data":       user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, MFAFactorEnrolledNotificationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (m *Mailer) MFAFactorUnenrolledNotificationMail(r *http.Request, user *models.User, factorType string) error {
-	data := map[string]any{
-		"Email":      user.GetEmail(),
-		"FactorType": factorType,
-		"Data":       user.UserMetaData,
-	}
-	return m.mail(r.Context(), m.cfg, MFAFactorUnenrolledNotificationTemplate, user.GetEmail(), data)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type emailParams struct {
@@ -491,28 +258,12 @@ type emailParams struct {
 }
 
 func getPath(filepath string, params *emailParams) (*url.URL, error) {
-	path := &url.URL{}
-	if filepath != "" {
-		if p, err := url.Parse(filepath); err != nil {
-			return nil, err
-		} else {
-			path = p
-		}
-	}
-	if params != nil {
-		path.RawQuery = fmt.Sprintf("token=%s&type=%s&redirect_to=%s", url.QueryEscape(params.Token), url.QueryEscape(params.Type), encodeRedirectURL(params.RedirectTo))
-	}
-	return path, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func encodeRedirectURL(referrerURL string) string {
-	if len(referrerURL) > 0 {
-		if strings.ContainsAny(referrerURL, "&=#") {
-			// if the string contains &, = or # it has not been URL
-			// encoded by the caller, which means it should be URL
-			// encoded by us otherwise, it should be taken as-is
-			referrerURL = url.QueryEscape(referrerURL)
-		}
-	}
-	return referrerURL
-}
+func encodeRedirectURL(referrerURL string) string { _ = "STUB: not implemented"; return "" }
+
+// if the string contains &, = or # it has not been URL
+// encoded by the caller, which means it should be URL
+// encoded by us otherwise, it should be taken as-is

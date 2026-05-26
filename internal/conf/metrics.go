@@ -21,6 +21,4 @@ type MetricsConfig struct {
 	PrometheusListenPort string `default:"9100" envconfig:"OTEL_EXPORTER_PROMETHEUS_PORT"`
 }
 
-func (mc MetricsConfig) Validate() error {
-	return nil
-}
+func (mc MetricsConfig) Validate() error { _ = "STUB: not implemented"; return nil }

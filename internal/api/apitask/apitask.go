@@ -5,13 +5,8 @@ package apitask
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"sync"
-
-	"github.com/sirupsen/logrus"
-	"github.com/supabase/auth/internal/api/apierrors"
-	"github.com/supabase/auth/internal/observability"
 )
 
 // ErrTask is the base of all errors originating from apitasks.
@@ -20,12 +15,8 @@ var ErrTask = errors.New("apitask")
 // Middleware wraps next with an http.Handler which adds apitasks handling
 // to the request context and waits for all tasks to exit before returning.
 func Middleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r = r.WithContext(With(r.Context()))
-		defer Wait(r.Context())
-
-		next.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
 // Task is implemented by objects which may be ran in the background.
@@ -44,12 +35,13 @@ type taskFunc struct {
 	fn  func(context.Context) error
 }
 
-func (o *taskFunc) Type() string { return o.typ }
+func (o *taskFunc) Type() string { _ = "STUB: not implemented"; return "" }
 
-func (o *taskFunc) Run(ctx context.Context) error { return o.fn(ctx) }
+func (o *taskFunc) Run(ctx context.Context) error { _ = "STUB: not implemented"; return nil }
 
 func Func(typ string, fn func(context.Context) error) Task {
-	return &taskFunc{typ: typ, fn: fn}
+	_ = "STUB: not implemented"
+	return *new(Task)
 }
 
 // Run will run a request-scoped background task in a separate goroutine
@@ -57,41 +49,21 @@ func Func(typ string, fn func(context.Context) error) Task {
 // immediate blocking call to task.Run(ctx).
 //
 // It is invalid to call Run within a tasks Run method.
-func Run(ctx context.Context, task Task) error {
-	wrk, ok := from(ctx)
-	if !ok {
-		return task.Run(ctx)
-	}
-	return wrk.run(ctx, task)
-}
+func Run(ctx context.Context, task Task) error { _ = "STUB: not implemented"; return nil }
 
 // Wait will wait for all currently running request-scoped background tasks to
 // complete before returning.
-func Wait(ctx context.Context) {
-	wrk, ok := from(ctx)
-	if !ok {
-		return
-	}
-	wrk.wait()
-}
+func Wait(ctx context.Context) { _ = "STUB: not implemented"; return }
 
 // With sets up the given context for adding request-scoped background tasks.
 func With(ctx context.Context) context.Context {
-	wrk, ok := from(ctx)
-	if !ok {
-		wrk = &requestWorker{}
-	}
-	return context.WithValue(ctx, ctxKey, wrk)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 var ctxKey = new(int)
 
-func from(ctx context.Context) (*requestWorker, bool) {
-	if st, ok := ctx.Value(ctxKey).(*requestWorker); ok && st != nil {
-		return st, true
-	}
-	return nil, false
-}
+func from(ctx context.Context) (*requestWorker, bool) { _ = "STUB: not implemented"; return nil, false }
 
 type requestWorker struct {
 	mu   sync.Mutex
@@ -99,38 +71,9 @@ type requestWorker struct {
 	done bool
 }
 
-func (o *requestWorker) wait() {
-	o.mu.Lock()
-	o.done = true
-	o.mu.Unlock()
-
-	o.wg.Wait()
-}
+func (o *requestWorker) wait() { _ = "STUB: not implemented"; return }
 
 func (o *requestWorker) run(ctx context.Context, task Task) error {
-	o.mu.Lock()
-	defer o.mu.Unlock()
-	if o.done {
-		err := fmt.Errorf(
-			"%w: unable to run tasks after a call to Wait", ErrTask)
-		return apierrors.NewInternalServerError(
-			"failed to run task").WithInternalError(err)
-	}
-
-	o.wg.Add(1)
-	go func() {
-		defer o.wg.Done()
-
-		if err := task.Run(ctx); err != nil {
-			typ := task.Type()
-			err = fmt.Errorf("apitask: error running %q: %w", typ, err)
-
-			le := observability.GetLogEntryFromContext(ctx).Entry
-			le.WithFields(logrus.Fields{
-				"action":    "apitask",
-				"task_type": typ,
-			}).WithError(err).Error(err)
-		}
-	}()
+	_ = "STUB: not implemented"
 	return nil
 }

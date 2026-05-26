@@ -14,22 +14,8 @@ var (
 )
 
 func DetermineClosestAPIVersion(date string) (APIVersion, error) {
-	if date == "" {
-		return APIVersionInitial, nil
-	}
-
-	parsed, err := time.ParseInLocation("2006-01-02", date, time.UTC)
-	if err != nil {
-		return APIVersionInitial, err
-	}
-
-	if parsed.Compare(APIVersion20240101) >= 0 {
-		return APIVersion20240101, nil
-	}
-
-	return APIVersionInitial, nil
+	_ = "STUB: not implemented"
+	return *new(APIVersion), nil
 }
 
-func FormatAPIVersion(apiVersion APIVersion) string {
-	return apiVersion.Format("2006-01-02")
-}
+func FormatAPIVersion(apiVersion APIVersion) string { _ = "STUB: not implemented"; return "" }

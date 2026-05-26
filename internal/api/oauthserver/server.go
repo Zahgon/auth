@@ -15,9 +15,6 @@ type Server struct {
 
 // NewServer creates a new OAuth server instance
 func NewServer(config *conf.GlobalConfiguration, db *storage.Connection, tokenService *tokens.Service) *Server {
-	return &Server{
-		config:       config,
-		db:           db,
-		tokenService: tokenService,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

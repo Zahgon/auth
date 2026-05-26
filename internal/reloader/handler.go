@@ -16,27 +16,20 @@ type AtomicHandler struct {
 type atomicHandlerValue struct{ http.Handler }
 
 // NewAtomicHandler creates a new AtomicHandler ready for use.
-func NewAtomicHandler(h http.Handler) *AtomicHandler {
-	ah := new(AtomicHandler)
-	ah.Store(h)
-	return ah
-}
+func NewAtomicHandler(h http.Handler) *AtomicHandler { _ = "STUB: not implemented"; return nil }
 
 // String implements fmt.Stringer by returning a string literal.
-func (ah *AtomicHandler) String() string { return "reloader.AtomicHandler" }
+func (ah *AtomicHandler) String() string { _ = "STUB: not implemented"; return "" }
 
 // Store will update this http.Handler to serve future requests using h.
-func (ah *AtomicHandler) Store(h http.Handler) {
-	ah.val.Store(&atomicHandlerValue{h})
-}
+func (ah *AtomicHandler) Store(h http.Handler) { _ = "STUB: not implemented"; return }
 
 // load will return the underlying http.Handler used to serve requests.
-func (ah *AtomicHandler) load() http.Handler {
-	return ah.val.Load().(*atomicHandlerValue).Handler
-}
+func (ah *AtomicHandler) load() http.Handler { _ = "STUB: not implemented"; return *new(http.Handler) }
 
 // ServeHTTP implements the standard libraries http.Handler interface by
 // atomically passing the request along to the most recently stored handler.
 func (ah *AtomicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	ah.load().ServeHTTP(w, r)
+	_ = "STUB: not implemented"
+	return
 }

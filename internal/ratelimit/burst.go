@@ -32,37 +32,21 @@ type BurstLimiter struct {
 //
 // See Example_newBurstLimiter for a visualization.
 func NewBurstLimiter(r conf.Rate) *BurstLimiter {
+	_ = "STUB: not implemented"
 	// The rate limiter deals in events per second.
-	d := r.OverTime
-	if d <= 0 {
-		d = defaultOverTime
-	}
-
-	e := r.Events
-	if e <= 0 {
-		e = 0
-	}
-
-	// BurstLimiter will have an initial token bucket of size `e`. It will
-	// be refilled at a rate of 1 per duration `d` indefinitely.
-	rl := &BurstLimiter{
-		rl:  rate.NewLimiter(rate.Every(d), int(e)),
-		cfg: r,
-	}
-	return rl
+	return nil
 }
+
+// BurstLimiter will have an initial token bucket of size `e`. It will
+// be refilled at a rate of 1 per duration `d` indefinitely.
 
 // Allow implements Limiter by calling AllowAt with the current time.
-func (l *BurstLimiter) Allow() bool {
-	return l.AllowAt(time.Now())
-}
+func (l *BurstLimiter) Allow() bool { _ = "STUB: not implemented"; return false }
 
 // AllowAt implements Limiter by calling the underlying x/time/rate.Limiter
 // with the given time.
-func (l *BurstLimiter) AllowAt(at time.Time) bool {
-	return l.rl.AllowN(at, 1)
-}
+func (l *BurstLimiter) AllowAt(at time.Time) bool { _ = "STUB: not implemented"; return false }
 
-func (l *BurstLimiter) String() string { return "BurstLimiter" }
+func (l *BurstLimiter) String() string { _ = "STUB: not implemented"; return "" }
 
-func (l *BurstLimiter) Config() conf.Rate { return l.cfg }
+func (l *BurstLimiter) Config() conf.Rate { _ = "STUB: not implemented"; return *new(conf.Rate) }

@@ -1,17 +1,10 @@
 package provider
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-	"strings"
 
 	"github.com/mrjones/oauth"
 	"github.com/supabase/auth/internal/conf"
-	"github.com/supabase/auth/internal/utilities"
 	"golang.org/x/oauth2"
 )
 
@@ -45,115 +38,53 @@ type twitterUser struct {
 
 // NewTwitterProvider creates a Twitter account provider.
 func NewTwitterProvider(ext conf.OAuthProviderConfiguration, scopes string) (OAuthProvider, error) {
-	if err := ext.ValidateOAuth(); err != nil {
-		return nil, err
-	}
-	authHost := chooseHost(ext.URL, defaultTwitterAPIBase)
-	p := &TwitterProvider{
-		ClientKey:   ext.ClientID[0],
-		Secret:      ext.Secret,
-		CallbackURL: ext.RedirectURI,
-		UserInfoURL: authHost + endpointProfile,
-	}
-	p.Consumer = newConsumer(p, authHost)
-	return p, nil
+	_ = "STUB: not implemented"
+	return *new(OAuthProvider), nil
 }
 
 // GetOAuthToken is a stub method for OAuthProvider interface, unused in OAuth1.0 protocol
 func (t TwitterProvider) GetOAuthToken(_ context.Context, _ string, _ ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
-	return &oauth2.Token{}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (t TwitterProvider) RequiresPKCE() bool {
+	_ = "STUB: not implemented"
+
+	// GetUserData is a stub method for OAuthProvider interface, unused in OAuth1.0 protocol
 	return false
 }
 
-// GetUserData is a stub method for OAuthProvider interface, unused in OAuth1.0 protocol
 func (t TwitterProvider) GetUserData(ctx context.Context, tok *oauth2.Token) (*UserProvidedData, error) {
-	return &UserProvidedData{}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // FetchUserData retrieves the user's data from the twitter provider
 func (t TwitterProvider) FetchUserData(ctx context.Context, tok *oauth.AccessToken) (*UserProvidedData, error) {
-	var u twitterUser
-	resp, err := t.Consumer.Get(
-		t.UserInfoURL,
-		map[string]string{"include_entities": "false", "skip_status": "true", "include_email": "true"},
-		tok,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer utilities.SafeClose(resp.Body)
-	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
-		return &UserProvidedData{}, fmt.Errorf("a %v error occurred with retrieving user from twitter", resp.StatusCode)
-	}
-	bits, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	_ = json.NewDecoder(bytes.NewReader(bits)).Decode(&u)
-
-	data := &UserProvidedData{}
-	if u.Email != "" {
-		data.Emails = []Email{{
-			Email:    u.Email,
-			Verified: true,
-			Primary:  true,
-		}}
-	}
-
-	data.Metadata = &Claims{
-		Issuer:            t.UserInfoURL,
-		Subject:           u.ID,
-		Name:              u.Name,
-		Picture:           u.AvatarURL,
-		PreferredUsername: u.UserName,
-
-		// To be deprecated
-		UserNameKey: u.UserName,
-		FullName:    u.Name,
-		AvatarURL:   u.AvatarURL,
-		ProviderId:  u.ID,
-	}
-
-	return data, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// To be deprecated
 
 // AuthCodeURL fetches the request token from the twitter provider
 func (t *TwitterProvider) AuthCodeURL(state string, args ...oauth2.AuthCodeOption) string {
+	_ = "STUB: not implemented"
 	// we do nothing with the state here as the state is passed in the requestURL step
-	requestToken, url, err := t.Consumer.GetRequestTokenAndUrl(t.CallbackURL + "?state=" + state)
-	if err != nil {
-		return ""
-	}
-	t.RequestToken = requestToken
-	t.AuthURL = url
-	return t.AuthURL
+	return ""
 }
 
 func newConsumer(provider *TwitterProvider, authHost string) *oauth.Consumer {
-	c := oauth.NewConsumer(
-		provider.ClientKey,
-		provider.Secret,
-		oauth.ServiceProvider{
-			RequestTokenUrl:   authHost + requestURL,
-			AuthorizeTokenUrl: authHost + authenticateURL,
-			AccessTokenUrl:    authHost + tokenURL,
-		},
-	)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Marshal encodes the twitter request token
-func (t TwitterProvider) Marshal() string {
-	b, _ := json.Marshal(t.RequestToken)
-	return string(b)
-}
+func (t TwitterProvider) Marshal() string { _ = "STUB: not implemented"; return "" }
 
 // Unmarshal decodes the twitter request token
 func (t TwitterProvider) Unmarshal(data string) (*oauth.RequestToken, error) {
-	requestToken := &oauth.RequestToken{}
-	err := json.NewDecoder(strings.NewReader(data)).Decode(requestToken)
-	return requestToken, err
+	_ = "STUB: not implemented"
+	return nil, nil
 }

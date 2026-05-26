@@ -29,68 +29,27 @@ type OIDCProviderCache struct {
 
 // NewOIDCProviderCache creates a new cache with the given TTL.
 func NewOIDCProviderCache(ttl time.Duration) *OIDCProviderCache {
-	return &OIDCProviderCache{
-		cache: make(map[string]*oidcCacheEntry),
-		ttl:   ttl,
-		now:   time.Now,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // GetProvider returns a cached *oidc.Provider for the given issuer, fetching
 // it via oidc.NewProvider if not cached or expired. Concurrent requests for
 // the same issuer are deduplicated via singleflight.
 func (c *OIDCProviderCache) GetProvider(ctx context.Context, issuer string) (*oidc.Provider, error) {
-	now := c.now()
+	_ = "STUB: not implemented"
 
 	// Fast path: read-lock check
-	c.mu.RLock()
-	if entry, ok := c.cache[issuer]; ok && now.Sub(entry.fetchedAt) < c.ttl {
-		c.mu.RUnlock()
-		return entry.provider, nil
-	}
-	c.mu.RUnlock()
-
-	// Slow path: singleflight fetch
-	val, err, _ := c.sf.Do(issuer, func() (interface{}, error) {
-		p, err := oidc.NewProvider(ctx, issuer)
-		if err != nil {
-			return nil, err
-		}
-
-		c.mu.Lock()
-		c.cache[issuer] = &oidcCacheEntry{
-			provider:  p,
-			fetchedAt: c.now(),
-		}
-		c.mu.Unlock()
-
-		return p, nil
-	})
-	if err != nil {
-		// Serve stale entry if available — keeps auth working during
-		// transient network failures or issuer outages.
-		c.mu.RLock()
-		if entry, ok := c.cache[issuer]; ok {
-			c.mu.RUnlock()
-			return entry.provider, nil
-		}
-		c.mu.RUnlock()
-		return nil, err
-	}
-
-	return val.(*oidc.Provider), nil
+	return nil, nil
 }
+
+// Slow path: singleflight fetch
+
+// Serve stale entry if available — keeps auth working during
+// transient network failures or issuer outages.
 
 // Invalidate removes a cached provider for the given issuer.
-func (c *OIDCProviderCache) Invalidate(issuer string) {
-	c.mu.Lock()
-	delete(c.cache, issuer)
-	c.mu.Unlock()
-}
+func (c *OIDCProviderCache) Invalidate(issuer string) { _ = "STUB: not implemented"; return }
 
 // Clear removes all cached providers.
-func (c *OIDCProviderCache) Clear() {
-	c.mu.Lock()
-	c.cache = make(map[string]*oidcCacheEntry)
-	c.mu.Unlock()
-}
+func (c *OIDCProviderCache) Clear() { _ = "STUB: not implemented"; return }

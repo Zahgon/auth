@@ -1,9 +1,6 @@
 package models
 
 import (
-	"slices"
-	"strings"
-
 	"github.com/supabase/auth/internal/api/provider"
 	"github.com/supabase/auth/internal/conf"
 	"github.com/supabase/auth/internal/storage"
@@ -15,17 +12,16 @@ import (
 // string, and is not typically persisted in the database. This value can vary
 // across time.
 func GetAccountLinkingDomain(provider string, ownLinkingDomains []string) string {
-	if strings.HasPrefix(provider, "sso:") || slices.Contains(ownLinkingDomains, provider) {
-		// when the provider ID is a SSO provider, then the linking
-		// domain is the provider itself i.e. there can only be one
-		// user + identity per identity provider
-		return provider
-	}
-
-	// otherwise, the linking domain is the default linking domain that
-	// links all accounts
-	return "default"
+	_ = "STUB: not implemented"
+	return ""
 }
+
+// when the provider ID is a SSO provider, then the linking
+// domain is the provider itself i.e. there can only be one
+// user + identity per identity provider
+
+// otherwise, the linking domain is the default linking domain that
+// links all accounts
 
 type AccountLinkingDecision = int
 
@@ -52,154 +48,49 @@ type AccountLinkingResult struct {
 //
 // Errors signal failure in processing only, like database access errors.
 func DetermineAccountLinking(tx *storage.Connection, config *conf.GlobalConfiguration, emails []provider.Email, aud, providerName, sub string) (AccountLinkingResult, error) {
-	var verifiedEmails []string
-	var candidateEmail provider.Email
-	for _, email := range emails {
-		if email.Verified || config.Mailer.Autoconfirm {
-			verifiedEmails = append(verifiedEmails, strings.ToLower(email.Email))
-		}
-		if email.Primary {
-			candidateEmail = email
-			candidateEmail.Email = strings.ToLower(email.Email)
-		}
-	}
-
-	// this is the linking domain for the new identity
-	candidateLinkingDomain := GetAccountLinkingDomain(providerName, config.Experimental.ProvidersWithOwnLinkingDomain)
-
-	if identity, terr := FindIdentityByIdAndProvider(tx, sub, providerName); terr == nil {
-		// account exists
-
-		var user *User
-		if user, terr = FindUserByID(tx, identity.UserID); terr != nil {
-			return AccountLinkingResult{}, terr
-		}
-
-		// we overwrite the email with the existing user's email since the user
-		// could have an empty email
-		candidateEmail.Email = user.GetEmail()
-		return AccountLinkingResult{
-			Decision:       AccountExists,
-			User:           user,
-			Identities:     []*Identity{identity},
-			LinkingDomain:  candidateLinkingDomain,
-			CandidateEmail: candidateEmail,
-		}, nil
-	} else if !IsNotFoundError(terr) {
-		return AccountLinkingResult{}, terr
-	}
-
-	// the identity does not exist, so we need to check if we should create a new account
-	// or link to an existing one
-	if len(verifiedEmails) == 0 {
-		// if there are no verified emails, we always decide to create a new account
-		user, terr := IsDuplicatedEmail(tx, candidateEmail.Email, aud, nil, config.Experimental.ProvidersWithOwnLinkingDomain)
-		if terr != nil {
-			return AccountLinkingResult{}, terr
-		}
-		if user != nil {
-			candidateEmail.Email = ""
-		}
-		return AccountLinkingResult{
-			Decision:       CreateAccount,
-			LinkingDomain:  candidateLinkingDomain,
-			CandidateEmail: candidateEmail,
-		}, nil
-	}
-
-	var similarIdentities []*Identity
-	var similarUsers []*User
-
-	// look for similar identities and users based on email
-	if terr := tx.Q().Eager().Where("email = any (?)", verifiedEmails).All(&similarIdentities); terr != nil {
-		return AccountLinkingResult{}, terr
-	}
-
-	if candidateLinkingDomain == "default" {
-		// there can be multiple user accounts with the same email when is_sso_user is true
-		// so we just do not consider those similar user accounts
-		if terr := tx.Q().Eager().Where("email = any (?) and is_sso_user = false", verifiedEmails).All(&similarUsers); terr != nil {
-			return AccountLinkingResult{}, terr
-		}
-	}
-
-	// Need to check if the new identity should be assigned to an
-	// existing user or to create a new user, according to the automatic
-	// linking rules
-	var linkingIdentities []*Identity
-
-	// now let's see if there are any existing and similar identities in
-	// the same linking domain
-	for _, identity := range similarIdentities {
-		if GetAccountLinkingDomain(identity.Provider, config.Experimental.ProvidersWithOwnLinkingDomain) == candidateLinkingDomain {
-			linkingIdentities = append(linkingIdentities, identity)
-		}
-	}
-
-	if len(linkingIdentities) == 0 {
-		if len(similarUsers) == 1 {
-			// no similarIdentities but a user with the same email exists
-			// so we link this new identity to the user
-			// TODO: Backfill the missing identity for the user
-			return AccountLinkingResult{
-				Decision:       LinkAccount,
-				User:           similarUsers[0],
-				Identities:     linkingIdentities,
-				LinkingDomain:  candidateLinkingDomain,
-				CandidateEmail: candidateEmail,
-			}, nil
-		} else if len(similarUsers) > 1 {
-			// this shouldn't happen since there is a partial unique index on (email and is_sso_user = false)
-			return AccountLinkingResult{
-				Decision:       MultipleAccounts,
-				Identities:     linkingIdentities,
-				LinkingDomain:  candidateLinkingDomain,
-				CandidateEmail: candidateEmail,
-			}, nil
-		} else {
-			// there are no identities in the linking domain, we have to
-			// create a new identity and new user
-			return AccountLinkingResult{
-				Decision:       CreateAccount,
-				LinkingDomain:  candidateLinkingDomain,
-				CandidateEmail: candidateEmail,
-			}, nil
-		}
-	}
-
-	// there is at least one identity in the linking domain let's do a
-	// sanity check to see if all of the identities in the domain share the
-	// same user ID
-	linkingUserId := linkingIdentities[0].UserID
-	for _, identity := range linkingIdentities {
-		if identity.UserID != linkingUserId {
-			// ok this linking domain has more than one user account
-			// caller should decide what to do
-
-			return AccountLinkingResult{
-				Decision:       MultipleAccounts,
-				Identities:     linkingIdentities,
-				LinkingDomain:  candidateLinkingDomain,
-				CandidateEmail: candidateEmail,
-			}, nil
-		}
-	}
-
-	// there's only one user ID in this linking domain, we can go on and
-	// create a new identity and link it to the existing account
-
-	var user *User
-	var terr error
-
-	if user, terr = FindUserByID(tx, linkingUserId); terr != nil {
-		return AccountLinkingResult{}, terr
-	}
-
-	return AccountLinkingResult{
-		Decision:       LinkAccount,
-		User:           user,
-		Identities:     linkingIdentities,
-		LinkingDomain:  candidateLinkingDomain,
-		CandidateEmail: candidateEmail,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(AccountLinkingResult), nil
 }
+
+// this is the linking domain for the new identity
+
+// account exists
+
+// we overwrite the email with the existing user's email since the user
+// could have an empty email
+
+// the identity does not exist, so we need to check if we should create a new account
+// or link to an existing one
+
+// if there are no verified emails, we always decide to create a new account
+
+// look for similar identities and users based on email
+
+// there can be multiple user accounts with the same email when is_sso_user is true
+// so we just do not consider those similar user accounts
+
+// Need to check if the new identity should be assigned to an
+// existing user or to create a new user, according to the automatic
+// linking rules
+
+// now let's see if there are any existing and similar identities in
+// the same linking domain
+
+// no similarIdentities but a user with the same email exists
+// so we link this new identity to the user
+// TODO: Backfill the missing identity for the user
+
+// this shouldn't happen since there is a partial unique index on (email and is_sso_user = false)
+
+// there are no identities in the linking domain, we have to
+// create a new identity and new user
+
+// there is at least one identity in the linking domain let's do a
+// sanity check to see if all of the identities in the domain share the
+// same user ID
+
+// ok this linking domain has more than one user account
+// caller should decide what to do
+
+// there's only one user ID in this linking domain, we can go on and
+// create a new identity and link it to the existing account

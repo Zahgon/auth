@@ -28,6 +28,4 @@ type TracingConfig struct {
 	Tags map[string]string
 }
 
-func (tc *TracingConfig) Validate() error {
-	return nil
-}
+func (tc *TracingConfig) Validate() error { _ = "STUB: not implemented"; return nil }
